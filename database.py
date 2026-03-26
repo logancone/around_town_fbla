@@ -46,6 +46,6 @@ def create_tables():
 
 
 # Creates the engine and the Session class, doesn't actually create a session though
-engine = create_engine("sqlite:///sample_data.db")
-# engine = create_engine("sqlite:///:memory:")
+# engine = create_engine("sqlite:///sample_data.db")
+engine = create_engine("sqlite:///:memory:")
 Session = sessionmaker(bind=engine)

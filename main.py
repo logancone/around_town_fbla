@@ -3,19 +3,7 @@ from services import *
 from PySide6.QtWidgets import QApplication
 from gui import LoginPage, DiscoverPage, MainWindow
 
-# def fill_with_fake_data():
-#     add_user("logan", "password")
-#     add_user("fred", "password")
-#     add_user("john", "password")
-#     add_user("billy", "password")
-
-#     add_business("Billy's Barbershop", 4, "Services", "images/billys_barbershop.png", "A great, friendly place to get a haircut!! I have 30+ years in the barber game, and you won't find more experience and better prices anywhere! Come on Tuesdays for 10% off!")
-#     add_business("Logan's Lit Bowling", 1, "Entertainment", "images/logans_lit_bowling.png")
-#     add_business("John's Jellies", 3, "Retail", "images/johns_jellies.png")
-#     add_business("Fred's Food", 2, "Food", "images/freds_food.png")
-
-#     add_review(1, 1, 5, "Amazing haircut, 10/10!")
-
+from uic_conversion import convert_ui_to_py
 
 def fill_with_fake_data():
     # Users
@@ -176,19 +164,16 @@ def fill_with_fake_data():
 
 def gui_init():
     app = QApplication()
-    # login_page = LoginPage()
-    # login_page.window.show()
     window = MainWindow()
     window.ui.show()
-    # discover_page.populate_cards(get_businesses_all())
     app.exec()
 
 def main():
     create_tables()
-    # fill_with_fake_data()
+    fill_with_fake_data()
 
     gui_init()
-    print("yay")
 
 if __name__ == "__main__":
+    # convert_ui_to_py() #Remove for presentation!
     main()

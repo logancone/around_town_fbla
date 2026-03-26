@@ -6,10 +6,11 @@ from PySide6.QtGui import QMouseEvent, QPixmap
 from database import Business, Review
 from services import authenticate_user, get_rating_str, get_businesses_all, get_username_from_id, get_reviews, get_businesses_by_category, sort_businesses_by_rating, is_username_available, add_user
 
+from ui.main_window import Ui_MainWindow as main_window
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        ui_file = QFile("ui/main_window.ui")
+        ui_file = QFile("ui/main_window.py")
         loader = QUiLoader()
 
         self.ui = loader.load(ui_file)
@@ -37,6 +38,8 @@ class MainWindow(QMainWindow):
 
         self.nav_shell.logout.connect(self.set_login_page)
 
+    
+
     def set_login_page(self):
         assert self.outer_stack is not None
         self.outer_stack.setCurrentWidget(self.login_page)
@@ -53,7 +56,7 @@ class NavShell(QWidget):
     logout = Signal()
     def __init__(self):
         super().__init__()
-        ui_file = QFile("ui/nav_shell.ui")
+        ui_file = QFile("ui/nav_shell.py")
         loader = QUiLoader()
 
         loader.load(ui_file, self)
@@ -110,7 +113,7 @@ class LoginPage(QWidget):
 
     def __init__(self):
         super().__init__()
-        ui_file = QFile("ui/login_page.ui")
+        ui_file = QFile("ui/login_page.py")
         loader = QUiLoader()
 
         loader.load(ui_file, self)
@@ -172,7 +175,7 @@ class SignupPage(QWidget):
 
     def __init__(self):
         super().__init__()
-        ui_file = QFile("ui/signup_page.ui")
+        ui_file = QFile("ui/signup_page.py")
         loader = QUiLoader()
 
         loader.load(ui_file, self)
@@ -257,7 +260,7 @@ class BusinessCard(QWidget):
         # Initialize widget and load layout from its .ui file
         super().__init__()
 
-        ui_file = QFile("ui/business_card.ui")
+        ui_file = QFile("ui/business_card.py")
         loader = QUiLoader()
 
         loader.load(ui_file, self)
@@ -320,7 +323,7 @@ class DiscoverPage(QWidget):
     def __init__(self):
         # Init class and load ui
         super().__init__()
-        ui_file = QFile("ui/discover_page.ui")
+        ui_file = QFile("ui/discover_page.py")
         loader = QUiLoader()
 
         loader.load(ui_file, self)
@@ -393,7 +396,7 @@ class ReviewIcon(QWidget):
         # Init class and load .ui
         super().__init__()
 
-        ui_file = QFile("ui/review_icon.ui")
+        ui_file = QFile("ui/review_icon.py")
         loader = QUiLoader()
 
         loader.load(ui_file, self)
@@ -419,7 +422,7 @@ class BusinessPage(QWidget):
     def __init__(self):
         # Init class and load ui
         super().__init__()
-        ui_file = QFile("ui/business_page.ui")
+        ui_file = QFile("ui/business_page.py")
         loader = QUiLoader()
 
         loader.load(ui_file, self)
@@ -440,6 +443,10 @@ class BusinessPage(QWidget):
         self.add_review_button = self.findChild(QPushButton, "add_review_button")
 
         self.review_list: list[ReviewIcon] = []
+
+        assert self.add_review_button is not None
+
+        self.add_review_button.clicked.connect(self.open_review_editor)
         
         
     def set_to_business(self, business: Business):
@@ -462,4 +469,44 @@ class BusinessPage(QWidget):
             review.deleteLater()
         
         self.review_list.clear()
+    
+    def open_review_editor(self):
+        print("woahh")
+        editor = ReviewEditor()
+        editor.exec()
 
+class ReviewEditor(QDialog):
+    def __init__(self): #
+        # Initialize widget and load layout from its .ui file
+        super().__init__()
+
+        ui_file = QFile("ui/review_editor.py")
+        loader = QUiLoader()
+
+        loader.load(ui_file, self)
+        ui_file.close()
+
+        # Set size
+        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+
+        # Define attributes
+        # self.title = self.findChild(QLabel, "title")
+        # self.category = self.findChild(QLabel, "category")
+        # self.ratings = self.findChild(QLabel, "ratings")
+        # self.thumbnail = self.findChild(QLabel, "thumbnail")
+
+        # # Assert everything has been defined (type-matching)
+        # assert self.title and self.category and self.ratings and self.thumbnail is not None
+
+        # Set info/text
+        # self.business = business
+
+        # self.id = business.id
+
+        # self.title.setText(business.name)
+        # self.category.setText(business.category)
+        # self.ratings.setText(get_rating_str(business.id))
+
+        
+
+    

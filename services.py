@@ -1,17 +1,18 @@
-from database import Session, User, Business, Review
+from database import Session, User, Business, Review, Bookmark
 
 from sqlalchemy import select, func
 from datetime import date
 
-# Adds a new user to User table
+# Adds a new user to User table and returns its id
 def add_user(username, password):
-    session = Session()
+    with Session() as session:
+        with session.begin():
+            new_user = User(username=username, password=password, created_on=date.today())
+            session.add(new_user)
+            session.flush()
+            
+            return new_user.id
     
-    new_user = User(username=username, password=password, created_on=date.today())
-    session.add(new_user)
-    session.commit()
-    session.close()
-
 # Adds a new business to Business table
 def add_business(name, owner_id, category, thumbnail_link, business_description):
     session = Session()
@@ -39,7 +40,6 @@ def add_review(user_id, business_id, rating, content):
         
         session.commit()
    
-
 # Takes a username and password and checks if the combination exists in User table
 def authenticate_user(username, password):
     # Open a new Session
@@ -53,7 +53,6 @@ def authenticate_user(username, password):
             return user
         else:
             return None
-
 
 def get_businesses_all():
     session = Session()
@@ -80,7 +79,6 @@ def sort_businesses_by_rating(ascending):
         result = session.scalars(stmt).all()
         return result
 
-
 # Returns all reviews for a certain business id
 def get_reviews(business_id):
     session = Session()
@@ -105,17 +103,16 @@ def get_rating_str(business_id):
     else:
         return f"⭐None (0)"
     
-
-
 def get_username_from_id(user_id):
-    session = Session()
+    with Session() as session:
+        # Sweitch to session.get
+        stmt = select(User).where(User.id == user_id)
+        user = session.scalars(stmt).one_or_none()
 
-    stmt = select(User).where(User.id == user_id)
-    user = session.scalars(stmt).one()
-
-    session.close()
-    return user.username
-
+        if user != None:
+            return user.username
+        else:
+            return None
 
 def is_username_available(username):
     with Session() as session:
@@ -126,3 +123,57 @@ def is_username_available(username):
             return True
         else:
             return False
+
+def toggle_bookmark(user_id, business_id):
+    with Session() as session:
+        with session.begin():
+            bookmark = session.get(Bookmark, (user_id, business_id))
+            if bookmark:
+                session.delete(bookmark)
+            else:
+                new_bookmark = Bookmark(user_id=user_id, business_id=business_id)
+                session.add(new_bookmark)
+
+def get_bookmarks_by_user(user_id):
+    with Session() as session:
+        stmt = select(Bookmark).where(Bookmark.user_id == user_id)
+        return session.scalars(stmt).all()
+
+def get_business_from_id(business_id): #TEMPROTY
+    with Session() as session:
+        return session.get(Business, business_id)
+
+def check_if_bookmark(user_id, business_id):
+    with Session() as session:
+        with session.begin():
+            bookmark = session.get(Bookmark, (user_id, business_id))
+            if bookmark:
+                return True
+            else:
+                return False
+            
+class AppSession():
+    def __init__(self):
+        # self.user_id = -1
+        self.user_id = 1
+        self.business_id = -1
+
+    def set_user_id(self, new_id):
+        self.user_id = new_id
+
+    def get_user_id(self):
+        return self.user_id
+    
+    def logout_user(self):
+        self.user_id = -1
+    
+    def set_business_id(self, new_id):
+        self.business_id = new_id
+    
+    def get_business_id(self):
+        return self.business_id
+    
+    def leave_business(self):
+        self.business_id = -1
+
+app_session = AppSession()

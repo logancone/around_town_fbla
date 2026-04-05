@@ -16,6 +16,7 @@ def fill_with_fake_data():
     add_user("emma", "password")
     add_user("chris", "password")
     add_user("olivia", "password")
+    add_user("q", "q")
 
     # Businesses
     add_business(
@@ -162,10 +163,20 @@ def fill_with_fake_data():
     add_review(5, 9, 3, "Prices are okay.")
     add_review(6, 9, 4, "Nice small outdoor shop.")
 
+    # toggle_bookmark(1, 1)
+    # toggle_bookmark(1, 4)
+    # toggle_bookmark(1, 3)
+    # toggle_bookmark(1, 6)
+    # toggle_bookmark(1, 8)
+
+
 def gui_init():
     app = QApplication()
+    with open("style.qss", "r", encoding='utf-8') as f:
+        app.setStyleSheet(f.read())
+
     window = MainWindow()
-    window.ui.show()
+    window.show()
     app.exec()
 
 def main():

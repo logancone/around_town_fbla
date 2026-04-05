@@ -1,5 +1,5 @@
 import sqlite3
-from sqlalchemy import create_engine, Column, Integer, String, Date, Text
+from sqlalchemy import create_engine, Column, Integer, String, Date, Text, ForeignKey
 from sqlalchemy.orm import DeclarativeBase, sessionmaker, Mapped, mapped_column
 
 from datetime import date
@@ -40,6 +40,12 @@ class Review(Base):
     content: Mapped[str]
     timestamp: Mapped[date] = mapped_column(Date)
 
+class Bookmark(Base):
+    __tablename__ = 'bookmarks'
+
+    user_id: Mapped[int] = mapped_column(ForeignKey(User.id), primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey(Business.id), primary_key=True)
+    
 # Function to actually initialize all the tables
 def create_tables():
     Base.metadata.create_all(engine)

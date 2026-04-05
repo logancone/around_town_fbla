@@ -41,6 +41,11 @@ class Ui_Form(object):
         self.navbar.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_3 = QVBoxLayout(self.navbar)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.profile_button = QPushButton(self.navbar)
+        self.profile_button.setObjectName(u"profile_button")
+
+        self.verticalLayout_3.addWidget(self.profile_button)
+
         self.discover_button = QPushButton(self.navbar)
         self.discover_button.setObjectName(u"discover_button")
 
@@ -72,6 +77,7 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
+        self.profile_button.setText(QCoreApplication.translate("Form", u"Profile", None))
         self.discover_button.setText(QCoreApplication.translate("Form", u"Discover", None))
         self.logout_button.setText(QCoreApplication.translate("Form", u"Log Out", None))
     # retranslateUi

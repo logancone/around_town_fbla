@@ -32,11 +32,11 @@ class Ui_Dialog(object):
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.rating_bar = QSlider(self.widget)
         self.rating_bar.setObjectName(u"rating_bar")
-        self.rating_bar.setMaximum(50)
-        self.rating_bar.setSingleStep(5)
+        self.rating_bar.setMaximum(10)
+        self.rating_bar.setSingleStep(1)
         self.rating_bar.setOrientation(Qt.Orientation.Horizontal)
         self.rating_bar.setTickPosition(QSlider.TickPosition.TicksAbove)
-        self.rating_bar.setTickInterval(10)
+        self.rating_bar.setTickInterval(2)
 
         self.horizontalLayout.addWidget(self.rating_bar)
 

@@ -1,0 +1,3 @@
+QPushButton#bookmark_button {
+    background: transparent;
+}

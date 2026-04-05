@@ -20,10 +20,10 @@
       <item>
        <widget class="QSlider" name="rating_bar">
         <property name="maximum">
-         <number>50</number>
+         <number>10</number>
         </property>
         <property name="singleStep">
-         <number>5</number>
+         <number>1</number>
         </property>
         <property name="orientation">
          <enum>Qt::Orientation::Horizontal</enum>
@@ -32,7 +32,7 @@
          <enum>QSlider::TickPosition::TicksAbove</enum>
         </property>
         <property name="tickInterval">
-         <number>10</number>
+         <number>2</number>
         </property>
        </widget>
       </item>

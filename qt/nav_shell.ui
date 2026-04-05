@@ -36,6 +36,13 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
+       <widget class="QPushButton" name="profile_button">
+        <property name="text">
+         <string>Profile</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="discover_button">
         <property name="text">
          <string>Discover</string>

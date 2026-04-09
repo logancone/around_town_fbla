@@ -98,15 +98,15 @@ class Ui_Form(object):
 
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
-        self.title = QLabel(self.scrollAreaWidgetContents)
-        self.title.setObjectName(u"title")
+        self.business_page_title = QLabel(self.scrollAreaWidgetContents)
+        self.business_page_title.setObjectName(u"business_page_title")
         font3 = QFont()
         font3.setPointSize(35)
         font3.setStrikeOut(False)
-        self.title.setFont(font3)
-        self.title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.business_page_title.setFont(font3)
+        self.business_page_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.horizontalLayout.addWidget(self.title)
+        self.horizontalLayout.addWidget(self.business_page_title)
 
         self.bookmark_button = QPushButton(self.scrollAreaWidgetContents)
         self.bookmark_button.setObjectName(u"bookmark_button")
@@ -138,7 +138,7 @@ class Ui_Form(object):
         self.add_review_button.setText(QCoreApplication.translate("Form", u"Add Review", None))
         self.description.setText(QCoreApplication.translate("Form", u"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", None))
         self.review_label.setText(QCoreApplication.translate("Form", u"Reviews", None))
-        self.title.setText(QCoreApplication.translate("Form", u"Business Title", None))
+        self.business_page_title.setText(QCoreApplication.translate("Form", u"Business Title", None))
         self.bookmark_button.setText("")
     # retranslateUi
 

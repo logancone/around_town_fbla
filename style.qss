@@ -1,3 +1,585 @@
+/* AROUNDTOWN Professional QSS Stylesheet - Dark Blue Theme */
+
+/* Core containers - shared dark background */
+QWidget, QMainWindow, QDialog, QMessageBox {
+    background-color: #0A0E27;
+}
+
+QWidget {
+    color: #E0E4FF;
+    outline: none;
+}
+
+QMainWindow::separator {
+    background-color: #2D3750;
+    width: 2px;
+    height: 2px;
+}
+
+QStatusBar {
+    background-color: #1A1E3F;
+    color: #E0E4FF;
+    border-top: 1px solid #2D3750;
+}
+
+QStatusBar::item {
+    border: none;
+}
+
+/* PUSHBUTTON STYLING */
+
+QPushButton {
+    background-color: #4A9EFF;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
+    font-size: 11pt;
+    outline: none;
+}
+
+QPushButton:hover {
+    background-color: #2D7FD1;
+}
+
+QPushButton:pressed {
+    background-color: #1E5A9E;
+}
+
+QPushButton:focus {
+    border: 2px solid #00D4FF;
+    outline: 1px solid rgba(74, 158, 255, 0.3);
+}
+
 QPushButton#bookmark_button {
-    background: transparent;
+    background-color: transparent;
+    border: 1px solid #2D3750;
+    border-radius: 4px;
+    padding: 4px 6px;
+    color: #8E94B8;
+}
+
+QPushButton#bookmark_button:hover {
+    background-color: rgba(74, 158, 255, 0.1);
+    border: 1px solid #4A9EFF;
+    color: #4A9EFF;
+}
+
+QPushButton#bookmark_button:pressed {
+    background-color: rgba(74, 158, 255, 0.2);
+    color: #00D4FF;
+}
+
+QPushButton#bookmark_button:checked {
+    background-color: rgba(74, 158, 255, 0.25);
+    border: 1px solid #4A9EFF;
+    color: #00D4FF;
+}
+
+/* Text inputs - shared base styles */
+QLineEdit, QPlainTextEdit, QTextEdit {
+    background-color: #1A1E3F;
+    color: #E0E4FF;
+    border: 2px solid #2D3750;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 10pt;
+    selection-background-color: #4A9EFF;
+    selection-color: white;
+}
+
+QLineEdit {
+    font-size: 11pt;
+}
+
+QLineEdit:focus, QPlainTextEdit:focus, QTextEdit:focus {
+    border: 2px solid #4A9EFF;
+    background-color: #0F1229;
+}
+
+QLineEdit::placeholder {
+    color: #8E94B8;
+}
+
+/* Label - base and specific styles */
+QLabel {
+    color: #E0E4FF;
+    background-color: transparent;
+    border: none;
+}
+
+QLabel#app_title {
+    color: #4A9EFF;
+    font-size: 35pt;
+    font-weight: bold;
+}
+
+QLabel#error_label {
+    color: #FF6B9D;
+    font-size: 8pt;
+    font-weight: 500;
+}
+
+QLabel#discover_label {
+    color: #4A9EFF;
+    font-size: 25pt;
+    font-weight: bold;
+}
+
+QLabel#filter_label, QLabel#sort_label {
+    color: #E0E4FF;
+    font-weight: bold;
+}
+
+QLabel#title {
+    font-size: 13pt;
+    font-weight: bold;
+}
+
+QLabel#business_page_title {
+    font-size: 28pt;
+    font-weight: bold;
+}
+
+QLabel#category {
+    color: #8E94B8;
+    font-size: 11pt;
+}
+
+QLabel#ratings {
+    color: #4A9EFF;
+    font-size: 11pt;
+    font-weight: 500;
+}
+
+QLabel#thumbnail {
+    background-color: #1A1E3F;
+    border: 1px solid #2D3750;
+    border-radius: 4px;
+}
+
+QLabel#username_label {
+    color: #4A9EFF;
+    font-size: 18pt;
+    font-weight: bold;
+}
+
+QLabel#bookmarks_label {
+    font-size: 14pt;
+    font-weight: 600;
+}
+
+QLabel#rating_label {
+    color: #4A9EFF;
+    font-weight: 600;
+}
+
+QLabel#header {
+    font-weight: 600;
+}
+
+QLabel#body {
+    color: #8E94B8;
+}
+
+/* Frame and Layout - base and specific styles */
+QFrame {
+    background-color: transparent;
+    border: none;
+}
+
+QFrame#navbar {
+    background-color: #0F1229;
+    border-right: 2px solid #2D3750;
+    border-radius: 0px;
+}
+
+QFrame#search_options {
+    background-color: #1A1E3F;
+    border: 1px solid #2D3750;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 8px 0px;
+}
+
+QFrame#Form {
+    background-color: #1A1E3F;
+    border: 1px solid #2D3750;
+    border-radius: 8px;
+}
+
+QFrame#Form:hover {
+    background-color: #252C4A;
+    border: 1px solid #4A9EFF;
+}
+
+QFrame#ReviewIcon {
+    border: 1px solid #2D3750;
+    border-radius: 8px;
+}
+
+/* ScrollArea and ScrollBar - shared dark backgrounds */
+QScrollArea, QScrollArea > QWidget > QWidget, QScrollBar:vertical, QScrollBar:horizontal {
+    background-color: #0A0E27;
+}
+
+QScrollBar:vertical {
+    width: 12px;
+    margin: 0px;
+    border-radius: 6px;
+}
+
+QScrollBar:horizontal {
+    height: 12px;
+    margin: 0px;
+    border-radius: 6px;
+}
+
+QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+    background-color: #2D3750;
+    border-radius: 6px;
+    margin: 2px;
+}
+
+QScrollBar::handle:vertical {
+    min-height: 20px;
+}
+
+QScrollBar::handle:horizontal {
+    min-width: 20px;
+}
+
+QScrollBar::handle:vertical:hover, QScrollBar::handle:horizontal:hover {
+    background-color: #4A9EFF;
+}
+
+QScrollBar::handle:vertical:pressed, QScrollBar::handle:horizontal:pressed {
+    background-color: #00D4FF;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical, QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    background: none;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    width: 0px;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical, QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background: none;
+}
+
+/* Profile page bookmarked cards scroll area */
+#scrollArea_2 {
+    border: 2px solid #5A7BA8;
+    border-radius: 6px;
+}
+
+/* Slider - horizontal and vertical shared styles */
+QSlider::groove:horizontal, QSlider::groove:vertical {
+    background-color: #2D3750;
+    border: none;
+    border-radius: 3px;
+}
+
+QSlider::groove:horizontal {
+    height: 6px;
+    margin: 2px 0;
+}
+
+QSlider::groove:vertical {
+    width: 6px;
+    margin: 0 2px;
+}
+
+QSlider::handle:horizontal, QSlider::handle:vertical {
+    background-color: #4A9EFF;
+    border: 2px solid #00D4FF;
+    border-radius: 9px;
+}
+
+QSlider::handle:horizontal {
+    width: 18px;
+    margin: -6px 0;
+}
+
+QSlider::handle:vertical {
+    height: 18px;
+    margin: 0 -6px;
+}
+
+QSlider::handle:horizontal:hover, QSlider::handle:vertical:hover {
+    background-color: #00D4FF;
+    border: 2px solid #4A9EFF;
+}
+
+QSlider::handle:horizontal:focus {
+    border: 2px solid #E0E4FF;
+    outline: 1px solid rgba(74, 158, 255, 0.3);
+}
+
+QSlider::sub-page:horizontal {
+    background-color: #4A9EFF;
+    border-radius: 3px;
+}
+
+/* Dialog and button styling */
+QDialogButtonBox {
+    dialogbuttonbox-buttons-have-icons: 0;
+}
+
+QDialogButtonBox QPushButton {
+    min-width: 70px;
+}
+
+/* COMBOBOX AND DROPDOWN STYLING */
+
+QComboBox {
+    background-color: #1A1E3F;
+    color: #E0E4FF;
+    border: 2px solid #2D3750;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 11pt;
+}
+
+QComboBox:hover {
+    border: 2px solid #2D7FD1;
+}
+
+QComboBox:focus {
+    border: 2px solid #4A9EFF;
+}
+
+QComboBox::down-arrow {
+    image: none;
+    background-color: #4A9EFF;
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+QComboBox::drop-down {
+    border: none;
+    background-color: transparent;
+    padding-right: 8px;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #1A1E3F;
+    color: #E0E4FF;
+    border: 1px solid #2D3750;
+    outline: none;
+}
+
+QComboBox QAbstractItemView::item {
+    padding: 6px 10px;
+}
+
+QComboBox QAbstractItemView::item:hover {
+    background-color: rgba(74, 158, 255, 0.2);
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background-color: #4A9EFF;
+    color: white;
+}
+
+/* SpinBox and numeric inputs - shared styles */
+QSpinBox, QDoubleSpinBox {
+    background-color: #1A1E3F;
+    color: #E0E4FF;
+    border: 2px solid #2D3750;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 11pt;
+}
+
+QSpinBox:focus, QDoubleSpinBox:focus {
+    border: 2px solid #4A9EFF;
+}
+
+QSpinBox::up-button, QDoubleSpinBox::up-button, QSpinBox::down-button, QDoubleSpinBox::down-button {
+    background-color: #4A9EFF;
+    border: none;
+    border-radius: 4px;
+    width: 20px;
+}
+
+QSpinBox::up-button:hover, QDoubleSpinBox::up-button:hover, QSpinBox::down-button:hover, QDoubleSpinBox::down-button:hover {
+    background-color: #2D7FD1;
+}
+
+/* CheckBox and RadioButton - shared indicator styles */
+QCheckBox, QRadioButton {
+    color: #E0E4FF;
+    spacing: 8px;
+}
+
+QCheckBox::indicator, QRadioButton::indicator {
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+}
+
+QRadioButton::indicator {
+    border-radius: 9px;
+}
+
+QCheckBox::indicator:unchecked, QRadioButton::indicator:unchecked {
+    background-color: #1A1E3F;
+    border: 2px solid #2D3750;
+}
+
+QCheckBox::indicator:unchecked:hover, QRadioButton::indicator:unchecked:hover {
+    border: 2px solid #4A9EFF;
+    background-color: rgba(74, 158, 255, 0.1);
+}
+
+QCheckBox::indicator:checked {
+    background-color: #4A9EFF;
+    border: 2px solid #4A9EFF;
+}
+
+QRadioButton::indicator:checked {
+    background-color: #4A9EFF;
+    border: 2px solid #00D4FF;
+}
+
+QCheckBox::indicator:checked:hover, QRadioButton::indicator:checked:hover {
+    background-color: #2D7FD1;
+    border: 2px solid #2D7FD1;
+}
+
+/* OBJECT-SPECIFIC STYLING (BY OBJECT NAME) */
+
+/* Authentication page - login and signup buttons */
+QLineEdit#username_entry, QLineEdit#password_entry {
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12pt;
+}
+
+QLineEdit#username_entry:focus, QLineEdit#password_entry:focus {
+    border: 2px solid #4A9EFF;
+    background-color: #0F1229;
+}
+
+QPushButton#login_button, QPushButton#signup_button {
+    background-color: #4A9EFF;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 12pt;
+}
+
+QPushButton#login_button:hover, QPushButton#signup_button:hover {
+    background-color: #2D7FD1;
+}
+
+QPushButton#login_button:pressed, QPushButton#signup_button:pressed {
+    background-color: #1E5A9E;
+}
+
+/* Discover page filter and sort buttons */
+QPushButton#retail_button, QPushButton#food_button, QPushButton#entertainment_button, QPushButton#services_button, QPushButton#ratings_descending_button, QPushButton#ratings_ascending_button {
+    background-color: #1A1E3F;
+    color: #E0E4FF;
+    border: 2px solid #2D3750;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: 500;
+    font-size: 9pt;
+}
+
+QPushButton#retail_button:hover, QPushButton#food_button:hover, QPushButton#entertainment_button:hover, QPushButton#services_button:hover, QPushButton#ratings_descending_button:hover, QPushButton#ratings_ascending_button:hover {
+    background-color: rgba(74, 158, 255, 0.15);
+    border: 2px solid #4A9EFF;
+    color: #4A9EFF;
+}
+
+QPushButton#retail_button:pressed, QPushButton#food_button:pressed, QPushButton#entertainment_button:pressed, QPushButton#services_button:pressed, QPushButton#ratings_descending_button:pressed, QPushButton#ratings_ascending_button:pressed, QPushButton#retail_button:checked, QPushButton#food_button:checked, QPushButton#entertainment_button:checked, QPushButton#services_button:checked, QPushButton#ratings_descending_button:checked, QPushButton#ratings_ascending_button:checked {
+    background-color: #4A9EFF;
+    border: 2px solid #00D4FF;
+    color: white;
+}
+
+/* Navigation buttons */
+QPushButton#profile_button, QPushButton#discover_button {
+    background-color: #2D3750;
+    color: #E0E4FF;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-weight: 500;
+    font-size: 11pt;
+    text-align: left;
+}
+
+QPushButton#profile_button:hover, QPushButton#discover_button:hover {
+    background-color: #4A9EFF;
+    color: white;
+}
+
+QPushButton#profile_button:pressed, QPushButton#discover_button:pressed {
+    background-color: #00D4FF;
+    color: white;
+}
+
+QPushButton#logout_button {
+    background-color: #2D3750;
+    color: #E0E4FF;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-weight: 500;
+    font-size: 11pt;
+    text-align: left;
+}
+
+QPushButton#logout_button:hover {
+    background-color: #FF6B9D;
+    color: white;
+}
+
+QPushButton#logout_button:pressed {
+    background-color: #E85080;
+    color: white;
+}
+
+/* Business Card - label and review content */
+QPlainTextEdit#review_content {
+    background-color: #1A1E3F;
+    color: #E0E4FF;
+    border: 2px solid #2D3750;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 11pt;
+}
+
+QPlainTextEdit#review_content:focus {
+    border: 2px solid #4A9EFF;
+}
+
+QSlider#rating_bar {
+    margin: 8px 0;
+}
+
+/* FOCUS RECTANGLES */
+
+QWidget:focus {
+    outline: none;
+}
+
+/* Custom focus indicator for keyboard navigation */
+QPushButton:focus::default {
+    outline: 2px solid #00D4FF;
+    outline-offset: 2px;
 }

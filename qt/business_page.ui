@@ -151,7 +151,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="QLabel" name="title">
+          <widget class="QLabel" name="business_page_title">
            <property name="font">
             <font>
              <pointsize>35</pointsize>

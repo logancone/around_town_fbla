@@ -32,8 +32,8 @@ class MainWindow(QMainWindow):
         self.ui.outer_stack.addWidget(self.signup_page)
         self.ui.outer_stack.addWidget(self.nav_shell)
 
-        # self.ui.outer_stack.setCurrentWidget(self.login_page)
-        self.ui.outer_stack.setCurrentWidget(self.nav_shell)
+        self.ui.outer_stack.setCurrentWidget(self.login_page)
+        # self.ui.outer_stack.setCurrentWidget(self.nav_shell)
 
         self.login_page.login_success.connect(self.set_nav_shell)
         self.login_page.signup_request.connect(self.set_signup_page)
@@ -255,7 +255,7 @@ class BusinessCard(QFrame):
     def toggle_bookmark(self):
         user_id = services.app_session.get_user_id()
         services.toggle_bookmark(user_id, self.id)
-        
+
         if self.ui.bookmark_button.isChecked():
             self.ui.bookmark_button.setIcon(self.filled_icon)
         else:
@@ -306,13 +306,14 @@ class DiscoverPage(QWidget):
         self.business_selected.emit(business)
 
 # Class for the review icons that populate business page
-class ReviewIcon(QWidget):
+class ReviewIcon(QFrame):
     def __init__(self, review: Review):
         # Init class and load .ui
         super().__init__()
 
         self.ui = review_icon()
         self.ui.setupUi(self)
+        self.setObjectName(u"ReviewIcon")
 
         # Set size
         self.setFixedSize(800, 100)
@@ -341,7 +342,7 @@ class BusinessPage(QWidget):
 
     def set_to_business(self, business: Business):
         # self.clear_reviews()
-        self.ui.title.setText(business.name)
+        self.ui.business_page_title.setText(business.name)
         self.ui.description.setText(business.business_description)
 
         if services.check_if_bookmark(services.app_session.user_id, services.app_session.business_id):

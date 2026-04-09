@@ -55,12 +55,9 @@ def authenticate_user(username, password):
             return None
 
 def get_businesses_all():
-    session = Session()
-
-    stmt = select(Business)
-
-    result = session.scalars(stmt).all()
-    return result
+    with Session() as session:
+        stmt = select(Business)
+        return session.scalars(stmt).all()
 
 def get_businesses_by_category(category):
     with Session() as session:

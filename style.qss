@@ -77,6 +77,11 @@ QPushButton#bookmark_button:checked {
     color: #00D4FF;
 }
 
+QPushButton#reload_button {
+    padding: 0px;
+    font-size: 12pt;
+}
+
 /* Text inputs - shared base styles */
 QLineEdit, QPlainTextEdit, QTextEdit {
     background-color: #1A1E3F;

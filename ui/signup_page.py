@@ -65,6 +65,32 @@ class Ui_Form(object):
 
         self.verticalLayout.addWidget(self.confirm_password_entry)
 
+        self.verticalSpacer_3 = QSpacerItem(10, 100, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout.addItem(self.verticalSpacer_3)
+
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.horizontalLayout_2.setContentsMargins(-1, -1, -1, 0)
+        self.captcha_display = QLabel(self.verticalFrame)
+        self.captcha_display.setObjectName(u"captcha_display")
+
+        self.horizontalLayout_2.addWidget(self.captcha_display)
+
+        self.reload_button = QPushButton(self.verticalFrame)
+        self.reload_button.setObjectName(u"reload_button")
+        self.reload_button.setMaximumSize(QSize(25, 25))
+
+        self.horizontalLayout_2.addWidget(self.reload_button)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_2)
+
+        self.captcha_entry = QLineEdit(self.verticalFrame)
+        self.captcha_entry.setObjectName(u"captcha_entry")
+
+        self.verticalLayout.addWidget(self.captcha_entry)
+
         self.signup_button = QPushButton(self.verticalFrame)
         self.signup_button.setObjectName(u"signup_button")
 
@@ -106,6 +132,9 @@ class Ui_Form(object):
         self.username_entry.setPlaceholderText(QCoreApplication.translate("Form", u"Username", None))
         self.password_entry.setPlaceholderText(QCoreApplication.translate("Form", u"Password", None))
         self.confirm_password_entry.setPlaceholderText(QCoreApplication.translate("Form", u"Confirm Password", None))
+        self.captcha_display.setText("")
+        self.reload_button.setText(QCoreApplication.translate("Form", u"\u27f3", None))
+        self.captcha_entry.setPlaceholderText(QCoreApplication.translate("Form", u"Type the code seen above", None))
         self.signup_button.setText(QCoreApplication.translate("Form", u"Sign Up!", None))
         self.error_label.setText("")
         self.login_button.setText(QCoreApplication.translate("Form", u"Already have an account? Log in here!", None))

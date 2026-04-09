@@ -5,6 +5,7 @@ from PySide6.QtGui import QMouseEvent, QPixmap, QIcon
 
 from database import Business, Review
 import services
+import random
 
 from ui.main_window import Ui_MainWindow as main_window
 from ui.nav_shell import Ui_Form as nav_shell
@@ -51,6 +52,8 @@ class MainWindow(QMainWindow):
     def set_nav_shell(self):
         # self.nav_shell.user_logged_in()
         self.ui.outer_stack.setCurrentWidget(self.nav_shell)
+        self.login_page.clear_text()
+        self.signup_page.clear_text()
     
 class NavShell(QWidget):
     logout = Signal()
@@ -138,6 +141,11 @@ class LoginPage(QWidget):
                 self.ui.error_label.setText("Success!")
                 services.app_session.set_user_id(user.id)
                 self.login_success.emit()
+    
+    def clear_text(self):
+        self.ui.username_entry.setText('')
+        self.ui.password_entry.setText('')
+        self.ui.error_label.setText('')
 
 class SignupPage(QWidget):
     signup_success = Signal()
@@ -147,12 +155,29 @@ class SignupPage(QWidget):
         super().__init__()
         self.ui = signup_page()
         self.ui.setupUi(self)
-
+        
+        # Load CAPTCHAS
+        self.captchas = [
+            '2g7nm',
+            '7pn5g',
+            '8y6b3',
+            '32dnn',
+            '42dw4',
+            'c2fb7',
+            'excmn',
+            'gfp54',
+            'mg5nn',
+            'x8xnp'
+        ]
+        
+        self.load_random_captcha()
+        
         self.ui.signup_button.clicked.connect(self.attempt_signup)
         self.ui.login_button.clicked.connect(self.login_request.emit)
+        self.ui.reload_button.clicked.connect(self.load_random_captcha)
 
     # Return True if username and password are valid inputs, else return false
-    def validate_signup_input(self, username, password, confirm_password):
+    def validate_signup_input(self, username, password, confirm_password, captcha_attempt):
         # Ensure both fields have text
         if len(username) == 0 or len(password) == 0:
             self.ui.error_label.setText("Please fill out all fields!")
@@ -178,19 +203,38 @@ class SignupPage(QWidget):
             self.ui.error_label.setText("Username is already taken!")
             return False
         
+        # Ensure captcha is correct
+        if captcha_attempt != self.cur_captcha:
+            self.ui.error_label.setText("Incorrect CAPTCHA!")
+            return False
+        
         return True
     
     def attempt_signup(self):
         username = self.ui.username_entry.text()
         password = self.ui.password_entry.text()
         confirm_password = self.ui.confirm_password_entry.text()
+        captcha_attempt = self.ui.captcha_entry.text().lower()
 
         # If both fields have valid inputs
-        if self.validate_signup_input(username, password, confirm_password) == True:
+        if self.validate_signup_input(username, password, confirm_password, captcha_attempt) == True:
             new_user_id = services.add_user(username, password)
             self.ui.error_label.setText("Success!")
             services.app_session.set_user_id(new_user_id)
             self.signup_success.emit()
+
+    def load_random_captcha(self):
+        num = random.randint(0, len(self.captchas)-1)
+        self.cur_captcha = self.captchas[num]
+        captcha_path = f'images/captchas/{self.cur_captcha}.png'
+        self.ui.captcha_display.setPixmap(QPixmap(captcha_path))
+
+    def clear_text(self):
+        self.ui.username_entry.setText('')
+        self.ui.password_entry.setText('')
+        self.ui.confirm_password_entry.setText('')
+        self.ui.captcha_entry.setText('')
+        self.ui.error_label.setText('')
 
 # Class for the business cards that populate discover page
 class BusinessCard(QFrame):

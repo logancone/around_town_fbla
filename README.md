@@ -1,3 +1,8 @@
 AroundTown: An open-source desktop application designed for finding local small businesses.
 
-To run: download this repo, and run python main.py in your terminal. 
+All dependencies are located in environment.yml
+
+To run: 
+1. Download this repo
+2. Download all dependencies
+3. Run python main.py in your terminal

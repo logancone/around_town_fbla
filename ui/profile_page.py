@@ -16,8 +16,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
-    QScrollArea, QSizePolicy, QSpacerItem, QVBoxLayout,
-    QWidget)
+    QPushButton, QScrollArea, QSizePolicy, QSpacerItem,
+    QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -77,6 +77,14 @@ class Ui_Form(object):
 
         self.verticalLayout.addItem(self.verticalSpacer)
 
+        self.report_gen_button = QPushButton(self.scrollAreaWidgetContents)
+        self.report_gen_button.setObjectName(u"report_gen_button")
+        font2 = QFont()
+        font2.setBold(True)
+        self.report_gen_button.setFont(font2)
+
+        self.verticalLayout.addWidget(self.report_gen_button)
+
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
 
         self.gridLayout.addWidget(self.scrollArea, 0, 0, 1, 1)
@@ -91,5 +99,6 @@ class Ui_Form(object):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.username_label.setText(QCoreApplication.translate("Form", u"username", None))
         self.bookmarks_label.setText(QCoreApplication.translate("Form", u"Bookmarks", None))
+        self.report_gen_button.setText(QCoreApplication.translate("Form", u"Generate User Report", None))
     # retranslateUi
 

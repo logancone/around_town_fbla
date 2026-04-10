@@ -80,6 +80,9 @@ class Ui_Form(object):
         self.reload_button = QPushButton(self.verticalFrame)
         self.reload_button.setObjectName(u"reload_button")
         self.reload_button.setMaximumSize(QSize(25, 25))
+        font1 = QFont()
+        font1.setBold(True)
+        self.reload_button.setFont(font1)
 
         self.horizontalLayout_2.addWidget(self.reload_button)
 
@@ -98,9 +101,9 @@ class Ui_Form(object):
 
         self.error_label = QLabel(self.verticalFrame)
         self.error_label.setObjectName(u"error_label")
-        font1 = QFont()
-        font1.setPointSize(5)
-        self.error_label.setFont(font1)
+        font2 = QFont()
+        font2.setPointSize(5)
+        self.error_label.setFont(font2)
 
         self.verticalLayout.addWidget(self.error_label)
 

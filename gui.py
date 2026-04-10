@@ -5,6 +5,7 @@ from PySide6.QtGui import QMouseEvent, QPixmap, QIcon
 
 from database import Business, Review
 import services
+from services import BusinessData
 import random
 
 from ui.main_window import Ui_MainWindow as main_window
@@ -51,6 +52,7 @@ class MainWindow(QMainWindow):
 
     def set_nav_shell(self):
         # self.nav_shell.user_logged_in()
+        self.nav_shell.set_discover_page()
         self.ui.outer_stack.setCurrentWidget(self.nav_shell)
         self.login_page.clear_text()
         self.signup_page.clear_text()
@@ -75,8 +77,7 @@ class NavShell(QWidget):
         self.ui.page_stack.addWidget(self.business_page)
         self.ui.page_stack.addWidget(self.profile_page)
 
-        self.discover_page.populate_cards(services.get_businesses_all())
-        self.ui.page_stack.setCurrentWidget(self.discover_page)
+        self.set_discover_page()
 
         self.discover_page.business_selected.connect(self.set_business_page)
         self.profile_page.business_selected.connect(self.set_business_page)
@@ -86,7 +87,8 @@ class NavShell(QWidget):
         
     def set_discover_page(self):
         services.app_session.leave_business()
-        self.discover_page.populate_cards(services.get_businesses_all())
+        self.discover_page.load_all_business_data()
+        self.discover_page.populate_cards(self.discover_page.all_business_data)
         self.ui.page_stack.setCurrentWidget(self.discover_page)
 
     def set_business_page(self, business):
@@ -99,7 +101,6 @@ class NavShell(QWidget):
         self.ui.page_stack.setCurrentWidget(self.profile_page)
 
     def logout_pressed(self):
-        self.set_discover_page()
         services.app_session.logout_user()
         self.logout.emit()
 
@@ -241,7 +242,7 @@ class BusinessCard(QFrame):
     # create a click signal to notify when this card is clicked, passing the business object
     clicked = Signal(object)
 
-    def __init__(self, business: Business): #Business object that is represented by this card
+    def __init__(self, business: BusinessData): #Business object that is represented by this card
         # Initialize widget and load layout from its .ui file
         super().__init__()
         self.ui = business_card()
@@ -254,14 +255,14 @@ class BusinessCard(QFrame):
 
         self.ui.title.setText(business.name)
         self.ui.category.setText(business.category)
-        self.ui.ratings.setText(services.get_rating_str(business.id))
+        self.ui.ratings.setText(business.rating_str)
 
-        self.unfilled_icon = QIcon("images/icons/unfilled_bookmark.png")
-        self.filled_icon = QIcon("images/icons/filled_bookmark.png")
+        self.unfilled_icon = QIcon("images/icons/yellow_unfilled_bookmark.png")
+        self.filled_icon = QIcon("images/icons/yellow_filled_bookmark.png")
 
         self.ui.bookmark_button.clicked.connect(self.toggle_bookmark)
 
-        if services.check_if_bookmark(services.app_session.user_id, self.id):
+        if business.bookmarked:
             self.ui.bookmark_button.setIcon(self.filled_icon)
             self.ui.bookmark_button.setChecked(True)
         else:
@@ -270,27 +271,27 @@ class BusinessCard(QFrame):
 
         # Load image and crop square from center
         pixmap = QPixmap(business.thumbnail_link)
-        square = None
+        # square = None
         # Ensure pixmap loaded
-        if not pixmap.isNull():
-            # choose smaller length as size
-            size = min(pixmap.width(), pixmap.height())
+        # if not pixmap.isNull():
+        #     # choose smaller length as size
+        #     size = min(pixmap.width(), pixmap.height())
             
-            # Calculate center point
-            x = (pixmap.width() - size) // 2
-            y = (pixmap.height() - size) // 2
+        #     # Calculate center point
+        #     x = (pixmap.width() - size) // 2
+        #     y = (pixmap.height() - size) // 2
 
-            # Crop original based on center point
-            square = pixmap.copy(x, y, size, size)
+        #     # Crop original based on center point
+        #     square = pixmap.copy(x, y, size, size)
 
-            square = square.scaled(
-                self.ui.thumbnail.width(),
-                self.ui.thumbnail.height(),
-                Qt.AspectRatioMode.KeepAspectRatioByExpanding,
-                Qt.TransformationMode.SmoothTransformation
-            )
-        if square is not None:
-            self.ui.thumbnail.setPixmap(square)
+        #     square = square.scaled(
+        #         self.ui.thumbnail.width(),
+        #         self.ui.thumbnail.height(),
+        #         Qt.AspectRatioMode.KeepAspectRatioByExpanding,
+        #         Qt.TransformationMode.SmoothTransformation
+        #     )
+        # if square is not None:
+        self.ui.thumbnail.setPixmap(pixmap)
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         self.clicked.emit(self.business)
@@ -315,6 +316,7 @@ class DiscoverPage(QWidget):
         self.ui = discover_page()
         self.ui.setupUi(self)
 
+        self.all_business_data : list[Business] = []
         self.card_list : list[BusinessCard] = []
 
         self.ui.retail_button.clicked.connect(lambda: self.filter_cards_by_category("Retail"))
@@ -322,8 +324,8 @@ class DiscoverPage(QWidget):
         self.ui.entertainment_button.clicked.connect(lambda: self.filter_cards_by_category("Entertainment"))
         self.ui.services_button.clicked.connect(lambda: self.filter_cards_by_category("Services"))
 
-        self.ui.ratings_descending_button.clicked.connect(lambda: self.sort_cards_by_rating(False))
-        self.ui.ratings_ascending_button.clicked.connect(lambda: self.sort_cards_by_rating(True))
+        self.ui.ratings_descending_button.clicked.connect(lambda: self.sort_cards_by_rating(True))
+        self.ui.ratings_ascending_button.clicked.connect(lambda: self.sort_cards_by_rating(False))
         
 
     def populate_cards(self, businesses):
@@ -341,13 +343,22 @@ class DiscoverPage(QWidget):
         self.card_list.clear()
 
     def filter_cards_by_category(self, category):
-        self.populate_cards(services.get_businesses_by_category(category))
+        approved_businesses = []
+        for business in self.all_business_data:
+            if business.category == category:
+                approved_businesses.append(business)
+
+        self.populate_cards(approved_businesses)
     
-    def sort_cards_by_rating(self, ascending):
-        self.populate_cards(services.sort_businesses_by_rating(ascending))
+    def sort_cards_by_rating(self, descending):
+        sorted_businesses = sorted(self.all_business_data, key=lambda b: b.rating, reverse=descending)
+        self.populate_cards(sorted_businesses)
 
     def card_clicked(self, business):
         self.business_selected.emit(business)
+ 
+    def load_all_business_data(self):
+        self.all_business_data = services.get_all_business_data()
 
 # Class for the review icons that populate business page
 class ReviewIcon(QFrame):
@@ -376,8 +387,8 @@ class BusinessPage(QWidget):
 
         self.review_list: list[ReviewIcon] = []
 
-        self.unfilled_icon = QIcon("images/icons/unfilled_bookmark.png")
-        self.filled_icon = QIcon("images/icons/filled_bookmark.png")
+        self.unfilled_icon = QIcon("images/icons/yellow_unfilled_bookmark.png")
+        self.filled_icon = QIcon("images/icons/yellow_filled_bookmark.png")
 
         self.ui.bookmark_button.setIconSize(QSize(32, 32))
 
@@ -466,14 +477,18 @@ class ProfilePage(QWidget):
         self.ui.setupUi(self)
         self.bookmark_list: list[BusinessCard] = []
 
+        self.ui.report_gen_button.clicked.connect(services.generate_user_report)
+
+
     def load_profile(self, user_id):
         self.clear_bookmarks()
         username = services.get_username_from_id(user_id)
         if username is not None:
             self.ui.username_label.setText(username)
+
             bookmarks = services.get_bookmarks_by_user(user_id)
             for bookmark in bookmarks:
-                business = services.get_business_from_id(bookmark.business_id)
+                business = services.get_business_data_from_id(bookmark.business_id)
                 assert business
 
                 card = BusinessCard(business)

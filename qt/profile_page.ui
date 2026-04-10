@@ -111,6 +111,18 @@
          </property>
         </spacer>
        </item>
+       <item>
+        <widget class="QPushButton" name="report_gen_button">
+         <property name="font">
+          <font>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Generate User Report</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </widget>

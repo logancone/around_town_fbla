@@ -1,3 +1,13 @@
+from PySide6.QtWidgets import QWidget
+from PySide6.QtCore import Signal
+
+import services
+
+from gui.generated.ui_nav_shell import Ui_Form as nav_shell
+
+from gui.pages.discover_page import DiscoverPage
+from gui.pages.business_page import BusinessPage
+from gui.pages.profile_page import ProfilePage
     
 class NavShell(QWidget):
     logout = Signal()

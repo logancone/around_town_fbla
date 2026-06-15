@@ -2,6 +2,10 @@ from PySide6.QtWidgets import QMainWindow
 
 from gui.generated.ui_main_window import Ui_MainWindow as main_window
 
+from gui.pages.login_page import LoginPage
+from gui.pages.signup_page import SignupPage
+from gui.shell.nav_shell import NavShell
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()

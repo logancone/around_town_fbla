@@ -1,7 +1,7 @@
 from database import create_tables
 from services import *
 from PySide6.QtWidgets import QApplication
-from gui1 import LoginPage, DiscoverPage, MainWindow
+from gui.shell.main_window import MainWindow
 
 from uic_conversion import convert_ui_to_py
 

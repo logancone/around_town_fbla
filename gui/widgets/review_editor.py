@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QDialog
 
-import services
+from services.business_services import add_review
+from app_session import app_session
 
 from gui.generated.ui_review_editor import Ui_Dialog as review_editor
 
@@ -19,9 +20,9 @@ class ReviewEditor(QDialog):
         self.ui.rating_label.setText(f"{self.ui.rating_bar.value() / 2} ⭐")
         
     def send_review(self):
-        user_id = services.app_session.get_user_id()
-        business_id = services.app_session.get_business_id()
+        user_id = app_session.get_user_id()
+        business_id = app_session.get_business_id()
         rating = self.ui.rating_bar.value() / 2
         content = self.ui.review_content.toPlainText()
         
-        services.add_review(user_id, business_id, rating, content)
+        add_review(user_id, business_id, rating, content)

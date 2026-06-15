@@ -1,7 +1,8 @@
 from PySide6.QtWidgets import QWidget
 from PySide6.QtCore import Signal
 
-import services
+from services.user_services import authenticate_user
+from app_session import app_session
 
 from gui.generated.ui_login_page import Ui_Form as login_page
 
@@ -31,13 +32,13 @@ class LoginPage(QWidget):
         password = self.ui.password_entry.text()
         # If both fields have valid inputs
         if self.validate_login_input(username, password) == True:
-            user = services.authenticate_user(username, password)
+            user = authenticate_user(username, password)
 
             if user is None:
                 self.ui.error_label.setText("Invalid username or password!")
             else:
                 self.ui.error_label.setText("Success!")
-                services.app_session.set_user_id(user.id)
+                app_session.set_user_id(user.id)
                 self.login_success.emit()
     
     def clear_text(self):

@@ -4,6 +4,8 @@ from sqlalchemy.orm import DeclarativeBase, sessionmaker, Mapped, mapped_column
 
 from datetime import date
 
+from dataclasses import dataclass
+
 # Superclass for all table classes
 class Base(DeclarativeBase):
     pass
@@ -25,7 +27,8 @@ class Business(Base):
     name: Mapped[str]
     owner_id: Mapped[int]
     category: Mapped[str]
-    rating: Mapped[float] = mapped_column(nullable=True)
+    avg_rating: Mapped[float] = mapped_column(default=0)
+    rating_count: Mapped[int] = mapped_column(default=0)
     thumbnail_link: Mapped[str]
     business_description: Mapped[str]
     lat: Mapped[float]
@@ -60,12 +63,11 @@ class BusinessTag(Base):
     business_id: Mapped[int] = mapped_column(ForeignKey(Business.id), primary_key=True)
     tag_id: Mapped[int] = mapped_column(ForeignKey(Tag.id), primary_key=True)
 
-
 # Function to actually initialize all the tables
 def create_tables():
     Base.metadata.create_all(engine)
 
 # Creates the engine and the Session class, doesn't actually create a session though
-# engine = create_engine("sqlite:///sample_data.db")
+# engine = create_engine("sqlite:///dev/sample_data.db")
 engine = create_engine("sqlite:///:memory:")
 Session = sessionmaker(bind=engine)

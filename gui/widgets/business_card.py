@@ -2,8 +2,9 @@ from PySide6.QtWidgets import QFrame
 from PySide6.QtCore import Signal, Qt
 from PySide6.QtGui import QMouseEvent, QPixmap, QIcon
 
-from services import BusinessData
-import services
+from database import Business
+from services.user_services import toggle_bookmark as bookmark_toggle
+from app_session import app_session
 
 from gui.generated.ui_business_card import Ui_Form as business_card
 
@@ -12,7 +13,7 @@ class BusinessCard(QFrame):
     # create a click signal to notify when this card is clicked, passing the business object
     clicked = Signal(object)
 
-    def __init__(self, business: BusinessData): #Business object that is represented by this card
+    def __init__(self, business: Business): #Business object that is represented by this card
         # Initialize widget and load layout from its .ui file
         super().__init__()
         self.ui = business_card()
@@ -25,14 +26,18 @@ class BusinessCard(QFrame):
 
         self.ui.title.setText(business.name)
         self.ui.category.setText(business.category)
-        self.ui.ratings.setText(business.rating_str)
+
+        if business.rating_count > 0:
+            self.ui.ratings.setText(f"⭐{business.avg_rating} ({business.rating_count})")
+        else:
+            self.ui.ratings.setText("No reviews")
 
         self.unfilled_icon = QIcon("images/icons/yellow_unfilled_bookmark.png")
         self.filled_icon = QIcon("images/icons/yellow_filled_bookmark.png")
 
         self.ui.bookmark_button.clicked.connect(self.toggle_bookmark)
 
-        if business.bookmarked:
+        if app_session.is_business_bookmarked(business.id):
             self.ui.bookmark_button.setIcon(self.filled_icon)
             self.ui.bookmark_button.setChecked(True)
         else:
@@ -78,8 +83,8 @@ class BusinessCard(QFrame):
 
 
     def toggle_bookmark(self):
-        user_id = services.app_session.get_user_id()
-        services.toggle_bookmark(user_id, self.id)
+        user_id = app_session.get_user_id()
+        bookmark_toggle(user_id, self.id)
 
         if self.ui.bookmark_button.isChecked():
             self.ui.bookmark_button.setIcon(self.filled_icon)

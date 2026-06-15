@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QWidget
 from PySide6.QtCore import Signal
 
-import services
+from app_session import app_session
 
 from gui.generated.ui_nav_shell import Ui_Form as nav_shell
 
@@ -36,26 +36,26 @@ class NavShell(QWidget):
 
         self.business_page.return_pressed.connect(self.set_discover_page)
 
-        user_id = services.app_session.get_user_id()
+        user_id = app_session.get_user_id()
         self.profile_page.load_profile(user_id)
         
     def set_discover_page(self):
-        services.app_session.leave_business()
+        app_session.leave_business()
         self.discover_page.load_all_business_data()
         self.discover_page.populate_cards(self.discover_page.all_business_data)
         self.ui.page_stack.setCurrentWidget(self.discover_page)
 
     def set_business_page(self, business):
-        services.app_session.set_business_id(business.id)
+        app_session.set_business_id(business.id)
         self.business_page.set_to_business(business)
         self.ui.page_stack.setCurrentWidget(self.business_page)
 
     def set_profile_page(self):
-        self.profile_page.load_profile(services.app_session.get_user_id())
+        self.profile_page.load_profile(app_session.get_user_id())
         self.ui.page_stack.setCurrentWidget(self.profile_page)
 
     def logout_pressed(self):
-        services.app_session.logout_user()
+        app_session.logout_user()
         self.logout.emit()
 
     # def user_logged_in(self):

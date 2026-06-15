@@ -2,7 +2,8 @@ from PySide6.QtWidgets import QWidget
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QPixmap
 
-import services
+from services.user_services import add_user, is_username_available
+from app_session import app_session
 import random
 
 from gui.generated.ui_signup_page import Ui_Form as signup_page
@@ -59,7 +60,7 @@ class SignupPage(QWidget):
             return False
         
         # Ensure username is unique
-        if services.is_username_available(username) == False:
+        if is_username_available(username) == False:
             self.ui.error_label.setText("Username is already taken!")
             return False
         
@@ -78,9 +79,9 @@ class SignupPage(QWidget):
 
         # If both fields have valid inputs
         if self.validate_signup_input(username, password, confirm_password, captcha_attempt) == True:
-            new_user_id = services.add_user(username, password)
+            new_user_id = add_user(username, password)
             self.ui.error_label.setText("Success!")
-            services.app_session.set_user_id(new_user_id)
+            app_session.set_user_id(new_user_id)
             self.signup_success.emit()
 
     def load_random_captcha(self):

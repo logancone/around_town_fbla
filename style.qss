@@ -581,7 +581,7 @@ QSlider#rating_bar {
 
 QWidget:focus {
     outline: none;
-}
+} 
 
 /* Custom focus indicator for keyboard navigation */
 QPushButton:focus::default {

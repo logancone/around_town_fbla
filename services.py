@@ -1,4 +1,4 @@
-from database import Session, User, Business, Review, Bookmark
+from database import Session, User, Business, Review, Bookmark, Tag, BusinessTag
 
 from sqlalchemy import select, func
 from datetime import date, datetime
@@ -25,6 +25,52 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 
+from rapidfuzz.distance import DamerauLevenshtein
+from rapidfuzz import fuzz
+
+# Classes
+
+# AppSession class stores pertinent session information, such as the active user_id and current business_id
+class AppSession():
+    def __init__(self):
+        # self.user_id = -1
+        self.user_id = 1
+        self.business_id = -1
+
+    def set_user_id(self, new_id):
+        self.user_id = new_id
+
+    def get_user_id(self):
+        return self.user_id
+    
+    def logout_user(self):
+        self.user_id = -1
+    
+    def set_business_id(self, new_id):
+        self.business_id = new_id
+    
+    def get_business_id(self):
+        return self.business_id
+    
+    def leave_business(self):
+        self.business_id = -1
+
+# BusinessData class stores all business information including bookmark and rating info to avoid excessive db queries when loading business cards
+@dataclass
+class BusinessData:
+    id: int
+    name:str
+    category:str
+    thumbnail_link:str
+    rating:float
+    rating_str:str
+    bookmarked:bool
+    business_description:str
+    lat:float
+    lon:float
+
+# Methods
+
 # Adds a new user to User table and returns its id
 def add_user(username, password):
     with Session() as session:
@@ -36,13 +82,11 @@ def add_user(username, password):
             return new_user.id
     
 # Adds a new business to Business table
-def add_business(name, owner_id, category, thumbnail_link, business_description):
-    session = Session()
-
-    new_business = Business(name=name, owner_id=owner_id, category=category, thumbnail_link=thumbnail_link, business_description=business_description)
-    session.add(new_business)
-    session.commit()
-    session.close()
+def add_business(name, owner_id, category, thumbnail_link, business_description, lat, lon):
+    with Session() as session:
+        with session.begin():
+            new_business = Business(name=name, owner_id=owner_id, category=category, thumbnail_link=thumbnail_link, business_description=business_description, lat=lat, lon=lon)
+            session.add(new_business)
 
 # Adds a new review to Review table
 def add_review(user_id, business_id, rating, content):
@@ -54,7 +98,7 @@ def add_review(user_id, business_id, rating, content):
         # Calculate avg rating
         stmt = select(func.avg(Review.rating)).where(Review.business_id == business_id)
         avg = session.scalar(stmt)
-        # stmt = select(Business).where(Business.id == business_id)
+
         business = session.get(Business, business_id)
 
         if business and avg is not None:
@@ -76,12 +120,15 @@ def authenticate_user(username, password):
         else:
             return None
 
+# Pulls business, rating, and bookmark data for every business, returning a list of BusinessData objects for every business in the database
 def get_all_business_data():
     user_id = app_session.get_user_id()
 
     with Session() as session:
+        # Get all businesses
         businesses = session.scalars(select(Business)).all()
 
+        # Pull rating information
         rating_stmt = (
             select(
                 Review.business_id,
@@ -93,11 +140,13 @@ def get_all_business_data():
 
         rating_results = session.execute(rating_stmt).all()
 
+        # Organize rating info into dictionary
         ratings_map = {
             row[0]: (float(row[1]), row[2])
             for row in rating_results
         }
-
+        
+        # Pull bookmark information
         bookmark_stmt = select(Bookmark.business_id).where(
             Bookmark.user_id == user_id
         )
@@ -106,6 +155,7 @@ def get_all_business_data():
 
     business_data_list = []
 
+    # Organize data into BusinessData classes and return
     for b in businesses:
         avg, count = ratings_map.get(b.id, (0.0, 0))
 
@@ -120,29 +170,14 @@ def get_all_business_data():
                 rating=avg,
                 rating_str=rating_str,
                 bookmarked=b.id in bookmarked_ids,
-                business_description=b.business_description
+                business_description=b.business_description,
+                lat=b.lat,
+                lon=b.lon
             )
         )
 
     return business_data_list
     
-def get_businesses_by_category(category):
-    with Session() as session:
-        stmt = select(Business).where(Business.category == category)
-        result = session.scalars(stmt).all()
-    
-        return result
-    
-def sort_businesses_by_rating(ascending):
-    with Session() as session:
-        if ascending:
-            stmt = select(Business).order_by(Business.rating)
-        else:
-            stmt = select(Business).order_by(Business.rating.desc())
-        
-        result = session.scalars(stmt).all()
-        return result
-
 # Returns all reviews for a certain business id
 def get_reviews(business_id):
     session = Session()
@@ -236,14 +271,16 @@ def get_business_data_from_id(business_id):
         rating_str = f"⭐{avg:.1f} ({count})" if count > 0 else "No reviews"
 
         return BusinessData(
-             id=b.id,
+                id=b.id,
                 name=b.name,
                 category=b.category,
                 thumbnail_link=b.thumbnail_link,
                 rating=avg,
                 rating_str=rating_str,
                 bookmarked=b.id in bookmarked_ids,
-                business_description=b.business_description
+                business_description=b.business_description,
+                lat=b.lat,
+                lon=b.lon
         )
 
 def check_if_bookmark(user_id, business_id):
@@ -353,7 +390,6 @@ def generate_user_report():
 
         open_file(filename)
 
-
 def open_file(path):
     if sys.platform.startswith("win"):
         os.startfile(path)
@@ -362,40 +398,94 @@ def open_file(path):
     else:
         subprocess.call(["xdg-open", path])
 
+def add_preset_tag(tag):
+    with Session() as session:
+        with session.begin():
+            new_tag = Tag(tag_name=tag)
+            session.add(new_tag)
 
-class AppSession():
-    def __init__(self):
-        # self.user_id = -1
-        self.user_id = 1
-        self.business_id = -1
+def set_business_tag(business_id, tag_id):
+    with Session() as session:
+        with session.begin():
+            new_btag = BusinessTag(business_id=business_id, tag_id=tag_id)
+            session.add(new_btag)
 
-    def set_user_id(self, new_id):
-        self.user_id = new_id
+def get_tags_from_business(business_id):
+    with Session() as session:
+        stmt = select(BusinessTag).where(BusinessTag.business_id == business_id)
+        tags = session.scalars(stmt)
+        tag_list = []
+        for tag in tags:
+            t = session.get(Tag, tag.tag_id)
+            
+            assert t
 
-    def get_user_id(self):
-        return self.user_id
-    
-    def logout_user(self):
-        self.user_id = -1
-    
-    def set_business_id(self, new_id):
-        self.business_id = new_id
-    
-    def get_business_id(self):
-        return self.business_id
-    
-    def leave_business(self):
-        self.business_id = -1
+            tag_list.append(t.tag_name)
 
+        return tag_list
+
+
+def run_search(query):
+    with Session() as session:
+        query = query.lower()
+        stmt = select(Business)
+        results = []
+        for business in session.scalars(stmt):
+            score = 0
+            
+            # Name
+            if business.name.lower() == query:
+                score += 1000
+            elif business.name.lower().startswith(query):
+                score += 100
+            elif any(word.startswith(query) for word in business.name.lower().split()):
+                score += 80
+
+
+            # Fuzzy name backup
+            if len(query) >= 3:
+                score += max(DamerauLevenshtein.normalized_similarity(query, word) for word in business.name.lower().split()) * 15
+
+            # Tags
+            best_tag_score = 0
+            for tag in get_tags_from_business(business.id):
+                if tag.lower() == query:
+                    score += 75
+                
+                best_tag_score = max(best_tag_score, DamerauLevenshtein.normalized_similarity(query, tag.lower()))
+
+            score += best_tag_score * 20
+            
+            # Description
+            description_words = business.business_description.lower().split()
+            if query in description_words:
+                score += 10
+
+            # Category
+            if len(query) >= 3:
+                score += DamerauLevenshtein.normalized_similarity(query, business.category.lower()) * 10
+
+            results.append((score, get_business_data_from_id(business.id)))
+
+        results.sort(reverse=True, key=lambda x: x[0])
+        business_data_list = []
+        max_score = results[0][0]
+
+        for item in results:
+            if item[0] >= max(max_score * 0.3, 25):
+                business_data_list.append(item[1])
+
+        return business_data_list
+
+            
+
+            
+            
+
+            
+            
+
+
+# Initializes an instance of the AppSession class to store relevant info
 app_session = AppSession()
 
-@dataclass
-class BusinessData:
-    id: int
-    name:str
-    category:str
-    thumbnail_link:str
-    rating:float
-    rating_str:str
-    bookmarked:bool
-    business_description:str

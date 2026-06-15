@@ -60,6 +60,9 @@
       </item>
       <item>
        <widget class="QLineEdit" name="username_entry">
+        <property name="text">
+         <string>logan</string>
+        </property>
         <property name="placeholderText">
          <string>Username</string>
         </property>
@@ -67,6 +70,9 @@
       </item>
       <item>
        <widget class="QLineEdit" name="password_entry">
+        <property name="text">
+         <string>password</string>
+        </property>
         <property name="echoMode">
          <enum>QLineEdit::EchoMode::Password</enum>
         </property>

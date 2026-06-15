@@ -16,8 +16,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QHBoxLayout,
-    QLabel, QLayout, QPushButton, QScrollArea,
-    QSizePolicy, QVBoxLayout, QWidget)
+    QLabel, QLayout, QLineEdit, QPushButton,
+    QScrollArea, QSizePolicy, QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -57,6 +57,13 @@ class Ui_Form(object):
         self.discover_label.setWordWrap(False)
 
         self.verticalLayout_2.addWidget(self.discover_label)
+
+        self.search_bar = QLineEdit(self.scrollAreaWidgetContents_2)
+        self.search_bar.setObjectName(u"search_bar")
+        self.search_bar.setMinimumSize(QSize(0, 35))
+        self.search_bar.setEchoMode(QLineEdit.EchoMode.Normal)
+
+        self.verticalLayout_2.addWidget(self.search_bar)
 
         self.search_options = QFrame(self.scrollAreaWidgetContents_2)
         self.search_options.setObjectName(u"search_options")
@@ -118,7 +125,7 @@ class Ui_Form(object):
 
         self.verticalLayout_2.addWidget(self.business_list)
 
-        self.verticalLayout_2.setStretch(2, 8)
+        self.verticalLayout_2.setStretch(3, 8)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents_2)
 
         self.verticalLayout.addWidget(self.scrollArea)
@@ -132,6 +139,9 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.discover_label.setText(QCoreApplication.translate("Form", u"Discover", None))
+        self.search_bar.setInputMask("")
+        self.search_bar.setText("")
+        self.search_bar.setPlaceholderText(QCoreApplication.translate("Form", u"Type here to search...", None))
         self.filter_label.setText(QCoreApplication.translate("Form", u"Filter By Category:", None))
         self.retail_button.setText(QCoreApplication.translate("Form", u"Retail", None))
         self.food_button.setText(QCoreApplication.translate("Form", u"Food", None))

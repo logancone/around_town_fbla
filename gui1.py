@@ -1,6 +1,6 @@
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtWidgets import QWidget, QLineEdit, QPushButton, QLabel, QGridLayout, QSizePolicy, QMainWindow, QStackedWidget, QFrame, QTextEdit, QVBoxLayout, QScrollArea, QDialog
-from PySide6.QtCore import QFile, QSize, Signal, Qt
+from PySide6.QtCore import QFile, QSize, Signal, Qt, QTimer
 from PySide6.QtGui import QMouseEvent, QPixmap, QIcon
 
 from database import Business, Review
@@ -8,16 +8,16 @@ import services
 from services import BusinessData
 import random
 
-from ui.main_window import Ui_MainWindow as main_window
-from ui.nav_shell import Ui_Form as nav_shell
-from ui.login_page import Ui_Form as login_page
-from ui.signup_page import Ui_Form as signup_page
-from ui.business_card import Ui_Form as business_card
-from ui.discover_page import Ui_Form as discover_page
-from ui.review_icon import Ui_Form as review_icon
-from ui.business_page import Ui_Form as business_page
-from ui.review_editor import Ui_Dialog as review_editor
-from ui.profile_page import Ui_Form as profile_page
+from gui.generated.ui_main_window import Ui_MainWindow as main_window
+from gui.generated.ui_nav_shell import Ui_Form as nav_shell
+from gui.generated.ui_login_page import Ui_Form as login_page
+from gui.generated.ui_signup_page import Ui_Form as signup_page
+from gui.generated.ui_business_card import Ui_Form as business_card
+from gui.generated.ui_discover_page import Ui_Form as discover_page
+from gui.generated.ui_review_icon import Ui_Form as review_icon
+from gui.generated.ui_business_page import Ui_Form as business_page
+from gui.generated.ui_review_editor import Ui_Dialog as review_editor
+from gui.generated.ui_profile_page import Ui_Form as profile_page
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -81,6 +81,8 @@ class NavShell(QWidget):
 
         self.discover_page.business_selected.connect(self.set_business_page)
         self.profile_page.business_selected.connect(self.set_business_page)
+
+        self.business_page.return_pressed.connect(self.set_discover_page)
 
         user_id = services.app_session.get_user_id()
         self.profile_page.load_profile(user_id)
@@ -293,10 +295,20 @@ class BusinessCard(QFrame):
         # if square is not None:
         self.ui.thumbnail.setPixmap(pixmap)
 
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+
     def mousePressEvent(self, event: QMouseEvent) -> None:
         self.clicked.emit(self.business)
         return super().mousePressEvent(event)
     
+    def keyPressEvent(self, event):
+        if event.key() in (Qt.Key.Key_Space, Qt.Key.Key_Enter, Qt.Key.Key_Return):
+            self.clicked.emit(self.business)
+            event.accept()
+            return 
+        super().keyPressEvent(event)
+
+
     def toggle_bookmark(self):
         user_id = services.app_session.get_user_id()
         services.toggle_bookmark(user_id, self.id)
@@ -327,6 +339,11 @@ class DiscoverPage(QWidget):
         self.ui.ratings_descending_button.clicked.connect(lambda: self.sort_cards_by_rating(True))
         self.ui.ratings_ascending_button.clicked.connect(lambda: self.sort_cards_by_rating(False))
         
+        self.search_timer = QTimer()
+        self.search_timer.setSingleShot(True)
+        self.search_timer.timeout.connect(self.run_search)
+
+        self.ui.search_bar.textEdited.connect(self.on_text_edited)
 
     def populate_cards(self, businesses):
         self.clear_cards()
@@ -341,6 +358,15 @@ class DiscoverPage(QWidget):
         for card in self.card_list:
             card.deleteLater()
         self.card_list.clear()
+
+    def on_text_edited(self):
+        self.search_timer.start(200)
+
+    def run_search(self):
+        self.clear_cards()
+        self.populate_cards(services.run_search(self.ui.search_bar.text().lower()))
+        
+        
 
     def filter_cards_by_category(self, category):
         approved_businesses = []
@@ -379,6 +405,8 @@ class ReviewIcon(QFrame):
         self.ui.body.setText(review.content)
 
 class BusinessPage(QWidget):
+    return_pressed = Signal()
+
     def __init__(self):
         # Init class and load ui
         super().__init__()
@@ -394,11 +422,19 @@ class BusinessPage(QWidget):
 
         self.ui.add_review_button.clicked.connect(self.open_review_editor)
         self.ui.bookmark_button.clicked.connect(self.toggle_bookmark)
+        self.ui.back_button.clicked.connect(self.return_to_discover_page)
 
     def set_to_business(self, business: Business):
         # self.clear_reviews()
         self.ui.business_page_title.setText(business.name)
         self.ui.description.setText(business.business_description)
+        
+        tags = services.get_tags_from_business(business.id)
+        tag_str = f"Tags: {tags.pop(0)}"
+        for tag in tags:
+            tag_str += f", {tag}"
+        self.ui.tag_label.setText(tag_str)
+
 
         if services.check_if_bookmark(services.app_session.user_id, services.app_session.business_id):
             self.ui.bookmark_button.setIcon(self.filled_icon)
@@ -446,6 +482,9 @@ class BusinessPage(QWidget):
             self.ui.bookmark_button.setIcon(self.filled_icon)
         else:
             self.ui.bookmark_button.setIcon(self.unfilled_icon)
+
+    def return_to_discover_page(self):
+        self.return_pressed.emit()
 
 class ReviewEditor(QDialog):
     def __init__(self): #

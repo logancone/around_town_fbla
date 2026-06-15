@@ -28,6 +28,8 @@ class Business(Base):
     rating: Mapped[float] = mapped_column(nullable=True)
     thumbnail_link: Mapped[str]
     business_description: Mapped[str]
+    lat: Mapped[float]
+    lon: Mapped[float]
 
 # Create table for reviews
 class Review(Base):
@@ -45,11 +47,23 @@ class Bookmark(Base):
 
     user_id: Mapped[int] = mapped_column(ForeignKey(User.id), primary_key=True)
     business_id: Mapped[int] = mapped_column(ForeignKey(Business.id), primary_key=True)
-    
+
+class Tag(Base):
+    __tablename__ = 'tags'
+
+    id:Mapped[int] = mapped_column(primary_key=True)
+    tag_name: Mapped[str] = mapped_column(unique=True)
+
+class BusinessTag(Base):
+    __tablename__ = 'business_tags'
+
+    business_id: Mapped[int] = mapped_column(ForeignKey(Business.id), primary_key=True)
+    tag_id: Mapped[int] = mapped_column(ForeignKey(Tag.id), primary_key=True)
+
+
 # Function to actually initialize all the tables
 def create_tables():
     Base.metadata.create_all(engine)
-
 
 # Creates the engine and the Session class, doesn't actually create a session though
 # engine = create_engine("sqlite:///sample_data.db")

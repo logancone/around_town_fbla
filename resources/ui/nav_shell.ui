@@ -37,6 +37,9 @@
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
        <widget class="QPushButton" name="profile_button">
+        <property name="toolTip">
+         <string>View your profile and saved businesses</string>
+        </property>
         <property name="text">
          <string>Profile</string>
         </property>
@@ -44,6 +47,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="discover_button">
+        <property name="toolTip">
+         <string>Browse all businesses</string>
+        </property>
         <property name="text">
          <string>Discover</string>
         </property>
@@ -51,6 +57,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="logout_button">
+        <property name="toolTip">
+         <string>Sign out of your account</string>
+        </property>
         <property name="text">
          <string>Log Out</string>
         </property>

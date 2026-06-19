@@ -125,6 +125,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="retail_button">
+            <property name="accessibleName">
+             <string>Filter by Category: Retail</string>
+            </property>
+            <property name="accessibleDescription">
+             <string>Shows only the retail businesses</string>
+            </property>
             <property name="text">
              <string>Retail</string>
             </property>
@@ -132,6 +138,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="food_button">
+            <property name="accessibleName">
+             <string>Filter by category: food</string>
+            </property>
+            <property name="accessibleDescription">
+             <string>Shows only food businesses</string>
+            </property>
             <property name="text">
              <string>Food</string>
             </property>
@@ -139,6 +151,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="entertainment_button">
+            <property name="accessibleName">
+             <string>Filter by category: entertainment</string>
+            </property>
+            <property name="accessibleDescription">
+             <string>Shows only entertainment businesses</string>
+            </property>
             <property name="text">
              <string>Entertainment</string>
             </property>
@@ -146,6 +164,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="services_button">
+            <property name="accessibleName">
+             <string>Filter by category: services</string>
+            </property>
+            <property name="accessibleDescription">
+             <string>Shows only services businesses</string>
+            </property>
             <property name="text">
              <string>Services</string>
             </property>
@@ -165,6 +189,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="ratings_descending_button">
+            <property name="accessibleName">
+             <string>Sort by rating: high to low</string>
+            </property>
+            <property name="accessibleDescription">
+             <string>Sorts businesses by rating from highest to lowest</string>
+            </property>
             <property name="text">
              <string>High to Low</string>
             </property>
@@ -172,6 +202,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="ratings_ascending_button">
+            <property name="accessibleName">
+             <string>Sort by rating: low to high</string>
+            </property>
+            <property name="accessibleDescription">
+             <string>Sorts businesses by rating from lowest to highest</string>
+            </property>
             <property name="text">
              <string>Low to High</string>
             </property>

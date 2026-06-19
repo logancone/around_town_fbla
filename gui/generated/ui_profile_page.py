@@ -99,6 +99,15 @@ class Ui_Form(object):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.username_label.setText(QCoreApplication.translate("Form", u"username", None))
         self.bookmarks_label.setText(QCoreApplication.translate("Form", u"Bookmarks", None))
+#if QT_CONFIG(tooltip)
+        self.report_gen_button.setToolTip(QCoreApplication.translate("Form", u"Creates and downloads a PDF report of all user information", None))
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(accessibility)
+        self.report_gen_button.setAccessibleName("")
+#endif // QT_CONFIG(accessibility)
+#if QT_CONFIG(accessibility)
+        self.report_gen_button.setAccessibleDescription(QCoreApplication.translate("Form", u"Creates and downloads a PDF report of all user information", None))
+#endif // QT_CONFIG(accessibility)
         self.report_gen_button.setText(QCoreApplication.translate("Form", u"Generate User Report", None))
     # retranslateUi
 

@@ -77,8 +77,17 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
+#if QT_CONFIG(tooltip)
+        self.profile_button.setToolTip(QCoreApplication.translate("Form", u"View your profile and saved businesses", None))
+#endif // QT_CONFIG(tooltip)
         self.profile_button.setText(QCoreApplication.translate("Form", u"Profile", None))
+#if QT_CONFIG(tooltip)
+        self.discover_button.setToolTip(QCoreApplication.translate("Form", u"Browse all businesses", None))
+#endif // QT_CONFIG(tooltip)
         self.discover_button.setText(QCoreApplication.translate("Form", u"Discover", None))
+#if QT_CONFIG(tooltip)
+        self.logout_button.setToolTip(QCoreApplication.translate("Form", u"Sign out of your account", None))
+#endif // QT_CONFIG(tooltip)
         self.logout_button.setText(QCoreApplication.translate("Form", u"Log Out", None))
     # retranslateUi
 

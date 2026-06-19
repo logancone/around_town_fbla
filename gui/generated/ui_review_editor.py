@@ -71,7 +71,19 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"Dialog", None))
+#if QT_CONFIG(accessibility)
+        self.rating_bar.setAccessibleName(QCoreApplication.translate("Dialog", u"Rating Slider", None))
+#endif // QT_CONFIG(accessibility)
+#if QT_CONFIG(accessibility)
+        self.rating_bar.setAccessibleDescription(QCoreApplication.translate("Dialog", u"Use this slider to select your rating on a scale from 0-5", None))
+#endif // QT_CONFIG(accessibility)
         self.rating_label.setText(QCoreApplication.translate("Dialog", u"TextLabel", None))
+#if QT_CONFIG(accessibility)
+        self.review_content.setAccessibleName(QCoreApplication.translate("Dialog", u"Review Box", None))
+#endif // QT_CONFIG(accessibility)
+#if QT_CONFIG(accessibility)
+        self.review_content.setAccessibleDescription(QCoreApplication.translate("Dialog", u"Type your review here", None))
+#endif // QT_CONFIG(accessibility)
         self.review_content.setPlainText("")
         self.review_content.setPlaceholderText(QCoreApplication.translate("Dialog", u"Type Review Here...", None))
     # retranslateUi

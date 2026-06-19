@@ -110,8 +110,8 @@ sample_businesses = [
   {
     'title': "Fred's Food",
     'category': 'Food',
-    'thumbnail': 'resources/images/business_thumbnails/freds_food.png',
-    'description': "Local comfort food made fresh every day. Burgers, sandwiches, and homemade sides are the staples here. It's not fancy, but it’s consistent and filling. Combo meals are 15% off after 5 PM.",
+    'thumbnail': 'resources/images/business_thumbnails/freds_food.jpg',
+    'description': "Local comfort food made fresh every day. Burgers, sandwiches, and homemade sides are the staples here. It's not fancy, but it's consistent and filling. Combo meals are 15% off after 5 PM.",
     'lat': 37.089321,
     'lon': -76.512114,
     'tags': [1, 8, 86, 93]
@@ -138,7 +138,7 @@ sample_businesses = [
     'title': "Sarah's Sweet Treats",
     'category': 'Food',
     'thumbnail': 'resources/images/business_thumbnails/sarahs_sweet_treats.jpg',
-    'description': "A cozy little bakery focused on cookies, brownies, and cupcakes. Everything is baked the same morning it’s sold. Stop by on Fridays for a buy-one-get-one cupcake deal.",
+    'description': "A cozy little bakery focused on cookies, brownies, and cupcakes. Everything is baked the same morning it's sold. Stop by on Fridays for a buy-one-get-one cupcake deal.",
     'lat': 37.058932,
     'lon': -76.482667,
     'tags': [5, 6, 79, 88]  
@@ -147,7 +147,7 @@ sample_businesses = [
     'title': "Mike's Bike Repair",
     'category': 'Services',
     'thumbnail': 'resources/images/business_thumbnails/mikes_bike_repair.jpg',
-    'description': "Neighborhood bike repair shop that handles everything from flat tires to full rebuilds. I try to keep prices fair and turnaround fast. Cyclists of all skill levels are welcome. If you mention this listing you’ll get a free brake adjustment with any repair.",
+    'description': "Neighborhood bike repair shop that handles everything from flat tires to full rebuilds. I try to keep prices fair and turnaround fast. Cyclists of all skill levels are welcome. If you mention this listing you'll get a free brake adjustment with any repair.",
     'lat': 37.094188,
     'lon': -76.501923,
     'tags': [39, 88, 95]
@@ -156,7 +156,7 @@ sample_businesses = [
     'title': "Emma's Art Corner",
     'category': 'Retail',
     'thumbnail': 'resources/images/business_thumbnails/emmas_art_corner.jpg',
-    'description': "Small art shop selling prints, stickers, and handmade crafts from local artists. The goal is to give creative people a place to show their work. Inventory changes a lot so there’s usually something new every week. Students get 10% off with ID.",
+    'description': "Small art shop selling prints, stickers, and handmade crafts from local artists. The goal is to give creative people a place to show their work. Inventory changes a lot so there's usually something new every week. Students get 10% off with ID.",
     'lat': 37.067744,
     'lon': -76.469882,
     'tags': [53, 88, 79]
@@ -165,7 +165,7 @@ sample_businesses = [
     'title': "Chris's Retro Arcade",
     'category': 'Entertainment',
     'thumbnail': 'resources/images/business_thumbnails/chris_retro_arcade.jpg',
-    'description': "An arcade filled with classic machines from the 80s and 90s. Pinball, fighting games, racing cabinets, and a few rare finds. It’s loud, nostalgic, and meant to feel like old school gaming again. Half-price entry on Sundays.",
+    'description': "An arcade filled with classic machines from the 80s and 90s. Pinball, fighting games, racing cabinets, and a few rare finds. It's loud, nostalgic, and meant to feel like old school gaming again. Half-price entry on Sundays.",
     'lat': 37.079511,
     'lon': -76.520144,
     'tags': [19, 27, 64, 66]
@@ -344,7 +344,7 @@ sample_businesses = [
   'tags': [1, 8, 88, 86, 90]},
  {'title': 'Corner Café',
   'category': 'Food',
-  'thumbnail': 'resources/images/business_thumbnails/corner_café.jpg',
+  'thumbnail': 'resources/images/business_thumbnails/corner_cafe.jpg',
   'description': 'A small coffee counter serving drip coffee, lattes, and light breakfast items. First-time guests can '
                  'use a 10% off coupon.',
   'lat': 37.282125,
@@ -630,7 +630,7 @@ sample_businesses = [
   'lat': 37.285098,
   'lon': -77.181827,
   'tags': [18, 79, 80, 88, 90]},
- {'title': 'Mariner’s Magic Show',
+ {'title': "Mariner's Magic Show",
   'category': 'Entertainment',
   'thumbnail': 'resources/images/business_thumbnails/mariners_magic_show.jpg',
   'description': 'A live performance venue featuring stage magic and family shows. Use this listing for a discounted '
@@ -875,6 +875,7 @@ sample_review_texts = (
         "My visit to {title} was rough and I probably would not rush back.",
     ]
     )
+
 
 def add_fake_users():
     for username in sample_usernames:

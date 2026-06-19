@@ -133,6 +133,15 @@
              <kerning>true</kerning>
             </font>
            </property>
+           <property name="toolTip">
+            <string>Add or remove this business from your bookmarks</string>
+           </property>
+           <property name="accessibleName">
+            <string>Bookmark Button</string>
+           </property>
+           <property name="accessibleDescription">
+            <string>Toggles current bookmarked state</string>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -170,6 +179,12 @@
              <pointsize>17</pointsize>
              <strikeout>false</strikeout>
             </font>
+           </property>
+           <property name="accessibleName">
+            <string>Back Button</string>
+           </property>
+           <property name="accessibleDescription">
+            <string>Return to discover page</string>
            </property>
            <property name="text">
             <string>X</string>

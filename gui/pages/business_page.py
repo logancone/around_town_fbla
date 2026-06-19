@@ -19,8 +19,8 @@ from gui.widgets.review_editor import ReviewEditor
 class BusinessPage(QWidget):
     # Creates a signal to alert the navshell if the user presses the 'x' button to return to the discover page
     return_pressed = Signal()
-
-    # Initialize class and load ui
+    
+    # Initialize class and setup ui
     def __init__(self):
         super().__init__()
         self.ui = business_page()
@@ -92,4 +92,6 @@ class BusinessPage(QWidget):
             self.ui.bookmark_button.setIcon(self.filled_icon)
         else:
             self.ui.bookmark_button.setIcon(self.unfilled_icon)
+
+        app_session.update_user_bookmarks()
 

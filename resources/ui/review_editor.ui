@@ -19,6 +19,12 @@
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QSlider" name="rating_bar">
+        <property name="accessibleName">
+         <string>Rating Slider</string>
+        </property>
+        <property name="accessibleDescription">
+         <string>Use this slider to select your rating on a scale from 0-5</string>
+        </property>
         <property name="maximum">
          <number>10</number>
         </property>
@@ -48,6 +54,12 @@
    </item>
    <item>
     <widget class="QPlainTextEdit" name="review_content">
+     <property name="accessibleName">
+      <string>Review Box</string>
+     </property>
+     <property name="accessibleDescription">
+      <string>Type your review here</string>
+     </property>
      <property name="plainText">
       <string/>
      </property>

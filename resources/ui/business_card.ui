@@ -31,6 +31,12 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="accessibleName">
+   <string>Business Card</string>
+  </property>
+  <property name="accessibleDescription">
+   <string>Click to open business details page</string>
+  </property>
   <property name="frameShape">
    <enum>QFrame::Shape::Box</enum>
   </property>
@@ -98,6 +104,15 @@
            <width>27</width>
            <height>27</height>
           </size>
+         </property>
+         <property name="toolTip">
+          <string>Add or remove this business from your bookmarks</string>
+         </property>
+         <property name="accessibleName">
+          <string>Bookmark Button</string>
+         </property>
+         <property name="accessibleDescription">
+          <string>Add or remove this business from your bookmarks</string>
          </property>
          <property name="text">
           <string/>

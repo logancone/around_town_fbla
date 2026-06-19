@@ -11,25 +11,28 @@ import subprocess
 
 
 from reportlab.platypus import (
-SimpleDocTemplate,
-Paragraph,
-Spacer,
-Table,
-TableStyle,
-Image,
-PageBreak
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    Table,
+    TableStyle,
+    Image,
+    PageBreak
 )
 
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 
-# from app_session import app_session
+# User services include any database queries/updates that mainly pertain to the user
 
-
-
-# Adds a new user to User table and returns its id
+# Adds a new user to User table and returns its id, storing the password as a hash
 def add_user(username, password):
+    """Adds a new user to the User table.
+    
+    Returns:
+        The user_id for the newly added user
+    """
     with Session() as session:
         with session.begin():
             new_user = User(username=username, password_hash=generate_password_hash(password), created_on=date.today())
@@ -37,7 +40,7 @@ def add_user(username, password):
             session.flush()
             
             return new_user.id
-   
+
 # Takes a username and password and checks if the combination exists in User table
 def authenticate_user(username, password):
     # Open a new Session
@@ -52,18 +55,17 @@ def authenticate_user(username, password):
         else:
             return None
 
-    
+# Takes in a user_id and returns the user(if exists, else none)
 def get_username_from_id(user_id):
     with Session() as session:
-        # Sweitch to session.get
-        stmt = select(User).where(User.id == user_id)
-        user = session.scalars(stmt).one_or_none()
+        user = session.get(User, user_id)
 
         if user != None:
             return user.username
         else:
             return None
 
+# Checks to see if any users have a specific username, returns true if so 
 def is_username_available(username):
     with Session() as session:
         stmt = select(User).where(User.username == username)

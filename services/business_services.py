@@ -5,9 +5,8 @@ from datetime import date
 
 from rapidfuzz.distance import DamerauLevenshtein
 
-# from database import BusinessData
+# Business services include any database queries/updates that mainly pertain to businesses
 
-   
 # Adds a new business to Business table
 def add_business(name, owner_id, category, thumbnail_link, business_description, lat, lon):
     with Session() as session:

@@ -13,13 +13,13 @@ class DiscoverPage(QWidget):
     # Creates a signal that will tell the navshell when to open the business page and what business to display
     business_selected = Signal(object)
 
-    # Initialize class and load ui
+    # Initialize class and setup ui
     def __init__(self):
         super().__init__()
         self.ui = discover_page()
         self.ui.setupUi(self)
 
-        # Creates a list of the raw business data and the active cards, which important for sorting, filtering, and cleanup
+        # Creates a list of the raw business objects and the active cards, which important for sorting, filtering, and cleanup
         self.all_business_data : list[Business] = []
         self.card_list : list[BusinessCard] = []
 
@@ -44,7 +44,7 @@ class DiscoverPage(QWidget):
             card.deleteLater()
         self.card_list.clear()
 
-    # Clears and loads cards from a list of BusinessData objects
+    # Clears cards and loads news cards from a list of Business objects
     def populate_cards(self, businesses):
         self.clear_cards()
 
@@ -54,14 +54,16 @@ class DiscoverPage(QWidget):
             self.ui.grid_layout.addWidget(card, i//3, i%3)
             self.card_list.append(card)
 
+    # Starts the search delay timer
     def on_text_edited(self):
         self.search_timer.start(200)
 
+    # Clears cards and then runs a search with the current text in the serach bar, populating the page with the results
     def run_search(self):
         self.clear_cards()
         self.populate_cards(run_search(self.ui.search_bar.text().lower()))
         
-
+    # Goes through all businesses, selecting the ones of a certain category, and populates the page with the results
     def filter_cards_by_category(self, category):
         approved_businesses = []
         for business in self.all_business_data:
@@ -70,12 +72,15 @@ class DiscoverPage(QWidget):
 
         self.populate_cards(approved_businesses)
     
+    # Sorts all businesses by their rating (descending if param=True, else ascending), and populates the page with the results
     def sort_cards_by_rating(self, descending):
         sorted_businesses = sorted(self.all_business_data, key=lambda b: b.avg_rating, reverse=descending)
         self.populate_cards(sorted_businesses)
 
+    # Emits the business_selected signal, containing the business (which is passed from the business_card class)
     def card_clicked(self, business):
         self.business_selected.emit(business)
- 
+    
+    # Loads data from every single business and stores it in the class, allowing for quick reloading of business cards 
     def load_all_business_data(self):
         self.all_business_data = get_all_businesses()

@@ -118,6 +118,15 @@
            <bold>true</bold>
           </font>
          </property>
+         <property name="toolTip">
+          <string>Creates and downloads a PDF report of all user information</string>
+         </property>
+         <property name="accessibleName">
+          <string/>
+         </property>
+         <property name="accessibleDescription">
+          <string>Creates and downloads a PDF report of all user information</string>
+         </property>
          <property name="text">
           <string>Generate User Report</string>
          </property>

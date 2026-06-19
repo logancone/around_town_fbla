@@ -19,6 +19,9 @@ class AppSession():
     def get_user_bookmarks(self):
         return self.users_bookmarks
     
+    def update_user_bookmarks(self):
+        self.users_bookmarks = get_users_bookmarks(self.user_id)
+    
     def is_business_bookmarked(self, business_id):
         return business_id in self.users_bookmarks
     

@@ -7,6 +7,8 @@ from dev.uic_conversion import convert_ui_to_py
 
 from dev.fake_data_generation import generate_all_fake_data, generate_some_fake_data
 
+import os
+
 def gui_init():
     app = QApplication()
     with open("resources/style.qss", "r", encoding='utf-8') as f:
@@ -17,6 +19,9 @@ def gui_init():
     app.exec()
 
 def main():
+    if os.path.exists("app_database.db"):
+        os.remove("app_database.db")
+        
     create_tables()
 
     # generate_all_fake_data()

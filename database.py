@@ -6,6 +6,8 @@ from datetime import date
 
 from dataclasses import dataclass
 
+import os
+
 # Superclass for all table classes
 class Base(DeclarativeBase):
     pass
@@ -68,6 +70,6 @@ def create_tables():
     Base.metadata.create_all(engine)
 
 # Creates the engine and the Session class, doesn't actually create a session though
-# engine = create_engine("sqlite:///dev/sample_data.db")
-engine = create_engine("sqlite:///:memory:")
+engine = create_engine("sqlite:///app_database.db")
+# engine = create_engine("sqlite:///:memory:")
 Session = sessionmaker(bind=engine)

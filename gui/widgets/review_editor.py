@@ -26,8 +26,8 @@ class ReviewEditor(QDialog):
     
     # Adds the review to the database using currently selected user id and business id along with the entered information
     def send_review(self):
-        user_id = app_session.get_user_id()
-        business_id = app_session.get_business_id()
+        user_id = app_session.user_id
+        business_id = app_session.business_id
         rating = self.ui.rating_bar.value() / 2
         content = self.ui.review_content.toPlainText()
         

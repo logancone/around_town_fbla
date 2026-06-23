@@ -72,7 +72,7 @@ class BusinessCard(QFrame):
 
     # Toggles the bookmarked state of the business for the current user, and updates the icon
     def bookmark_toggle(self):
-        user_id = app_session.get_user_id()
+        user_id = app_session.user_id
         toggle_bookmark(user_id, self.id)
 
         if self.ui.bookmark_button.isChecked():

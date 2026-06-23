@@ -45,8 +45,9 @@ def get_all_businesses():
         businesses = list(session.scalars(select(Business)).all())
         return businesses
     
+# Update
 # Returns all reviews for a certain business id
-def get_reviews(business_id):
+def get_reviews_for_business(business_id):
     session = Session()
     
     stmt = select(Review).where(Review.business_id == business_id)
@@ -81,7 +82,22 @@ def set_business_tag(business_id, tag_id):
             new_btag = BusinessTag(business_id=business_id, tag_id=tag_id)
             session.add(new_btag)
 
-def get_tags_from_business(business_id):
+def get_tags_from_business(business_id: int, names=False): 
+    """Gets all the tags from a specific business ID.
+
+    Args:
+        business_id (int): The ID of the business to search for.
+        names (bool, optional): If True, returns a list of tag names (strings). 
+            If False, returns a list of tag ids. Defaults to False.
+
+    Returns:
+        list[int | str]: A list containing the tag ids or their names 
+        associated with the business.
+
+    Raises:
+        AssertionError: If a tag associated with the business cannot be found 
+            in the Tag database table.
+    """
     with Session() as session:
         stmt = select(BusinessTag).where(BusinessTag.business_id == business_id)
         tags = session.scalars(stmt)
@@ -91,10 +107,18 @@ def get_tags_from_business(business_id):
             
             assert t
 
-            tag_list.append(t.tag_name)
+            if names:
+                tag_list.append(t.tag_name)
+            else:
+                tag_list.append(t.id)
 
         return tag_list
 
+def get_tag_from_id(tag_id):
+    with Session() as session:
+        tag = session.get(Tag, tag_id)
+        assert tag
+        return tag.tag_name
 
 def run_search(query):
     with Session() as session:
@@ -119,7 +143,7 @@ def run_search(query):
 
             # Tags
             best_tag_score = 0
-            for tag in get_tags_from_business(business.id):
+            for tag in get_tags_from_business(business.id, True):
                 if tag.lower() == query:
                     score += 75
                 

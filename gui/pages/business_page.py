@@ -3,7 +3,7 @@ from PySide6.QtCore import QSize, Signal
 from PySide6.QtGui import QIcon
 
 from database import Business
-from services.business_services import get_tags_from_business, get_reviews
+from services.business_services import get_tags_from_business, get_reviews_for_business
 from services.user_services import check_if_bookmark, toggle_bookmark
 
 from app_session import app_session
@@ -44,7 +44,7 @@ class BusinessPage(QWidget):
         self.ui.description.setText(business.business_description)
         
         # Create a string list of tags from the BusinessTag database
-        tags = get_tags_from_business(business.id)
+        tags = get_tags_from_business(business.id, True)
         tag_str = f"Tags: {tags.pop(0)}"
         for tag in tags:
             tag_str += f", {tag}"
@@ -68,7 +68,7 @@ class BusinessPage(QWidget):
     # Clears and loads reviews based on the current business id from the app session
     def load_reviews(self):
         self.clear_reviews()
-        reviews = get_reviews(app_session.get_business_id())
+        reviews = get_reviews_for_business(app_session.business_id)
 
         for review in reviews:
             # Add each review icon to both a list and the ui element
@@ -85,8 +85,8 @@ class BusinessPage(QWidget):
     # Lets the user toggle their bookmark state and updates the button icon
     def bookmark_toggle(self):
         # Gets the current user state and active business from the session
-        user_id = app_session.get_user_id()
-        business_id = app_session.get_business_id()
+        user_id = app_session.user_id
+        business_id = app_session.business_id
         toggle_bookmark(user_id, business_id)
         if self.ui.bookmark_button.isChecked():
             self.ui.bookmark_button.setIcon(self.filled_icon)

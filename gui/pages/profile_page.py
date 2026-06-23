@@ -45,7 +45,7 @@ class ProfilePage(QWidget):
             self.ui.username_label.setText(username)
 
             # Go through all bookmarked businesses and create a card
-            bookmarks = app_session.get_user_bookmarks()
+            bookmarks = app_session.users_bookmarks
             for bookmark in bookmarks:
                 business = get_business_from_id(bookmark)
                 assert business

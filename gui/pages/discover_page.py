@@ -1,12 +1,17 @@
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget, QPushButton
 from PySide6.QtCore import Signal, QTimer
+from PySide6.QtGui import QFont
 
 from database import Business
 from services.business_services import get_all_businesses, run_search
+# from services.user_services import get_recommendation_score
+
+from app_session import app_session
 
 from gui.generated.ui_discover_page import Ui_Form as discover_page
 
 from gui.widgets.business_card import BusinessCard
+from gui.widgets.chat_window import ChatWindow
 
 # Represents the discover page, which is where business cards are displayed for the user to search through
 class DiscoverPage(QWidget):
@@ -37,6 +42,22 @@ class DiscoverPage(QWidget):
         self.search_timer.timeout.connect(self.run_search)
 
         self.ui.search_bar.textEdited.connect(self.on_text_edited)
+
+        # self.ui.chat_button.setParent(self)
+        # self.ui.chat_button.raise_()
+        # self.ui.chat_button.move(self.width() - 70, self.height() - 70)
+
+        self.chatbutton = QPushButton("Ask AI\nAssistant💬", self)
+        self.chatbutton.adjustSize()
+        # font1 = QFont()
+        # font1.setPointSize(1)
+        # self.chatbutton.setFont(font1)
+        self.chatbutton.resize(125, 60)
+        self.chatbutton.move(self.width() - 150, self.height() - 75)
+        self.chatbutton.raise_()
+
+        self.chatbutton.clicked.connect(self.open_chat_window)
+        self.chat_window = ChatWindow()
 
     # Removes all cards from the discover page
     def clear_cards(self):
@@ -77,6 +98,10 @@ class DiscoverPage(QWidget):
         sorted_businesses = sorted(self.all_business_data, key=lambda b: b.avg_rating, reverse=descending)
         self.populate_cards(sorted_businesses)
 
+    def sort_cards_by_recommendation(self):
+        sorted_businesses = app_session.recommendation_service.sort_businesses_by_rec_score()
+        self.populate_cards(sorted_businesses)
+
     # Emits the business_selected signal, containing the business (which is passed from the business_card class)
     def card_clicked(self, business):
         self.business_selected.emit(business)
@@ -84,3 +109,10 @@ class DiscoverPage(QWidget):
     # Loads data from every single business and stores it in the class, allowing for quick reloading of business cards 
     def load_all_business_data(self):
         self.all_business_data = get_all_businesses()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.chatbutton.move(self.width() - 150, self.height() - 75)
+
+    def open_chat_window(self):
+        self.chat_window.show()

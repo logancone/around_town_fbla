@@ -3,7 +3,7 @@ from PySide6.QtCore import QSize, Signal
 from PySide6.QtGui import QIcon
 
 from database import Business
-from services.business_services import get_tags_from_business, get_reviews_for_business
+from services.business_services import get_tags_from_business, get_reviews_for_business, get_distance_to_business
 from services.user_services import check_if_bookmark, toggle_bookmark
 
 from app_session import app_session
@@ -49,6 +49,10 @@ class BusinessPage(QWidget):
         for tag in tags:
             tag_str += f", {tag}"
         self.ui.tag_label.setText(tag_str)
+
+        distance = round(get_distance_to_business(business.id, app_session.cur_lat, app_session.cur_lon), 1)
+
+        self.ui.distance_label.setText(f"{distance} Miles Away")
 
         if check_if_bookmark(app_session.user_id, app_session.business_id):
             self.ui.bookmark_button.setIcon(self.filled_icon)

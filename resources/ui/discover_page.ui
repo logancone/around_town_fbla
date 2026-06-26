@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>812</width>
+    <width>780</width>
     <height>706</height>
    </rect>
   </property>
@@ -36,7 +36,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>790</width>
+        <width>758</width>
         <height>684</height>
        </rect>
       </property>
@@ -112,104 +112,153 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QLabel" name="filter_label">
-            <property name="font">
-             <font>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Filter By Category:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="retail_button">
-            <property name="accessibleName">
-             <string>Filter by Category: Retail</string>
-            </property>
-            <property name="accessibleDescription">
-             <string>Shows only the retail businesses</string>
-            </property>
-            <property name="text">
-             <string>Retail</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="food_button">
-            <property name="accessibleName">
-             <string>Filter by category: food</string>
-            </property>
-            <property name="accessibleDescription">
-             <string>Shows only food businesses</string>
-            </property>
-            <property name="text">
-             <string>Food</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="entertainment_button">
-            <property name="accessibleName">
-             <string>Filter by category: entertainment</string>
-            </property>
-            <property name="accessibleDescription">
-             <string>Shows only entertainment businesses</string>
-            </property>
-            <property name="text">
-             <string>Entertainment</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="services_button">
-            <property name="accessibleName">
-             <string>Filter by category: services</string>
-            </property>
-            <property name="accessibleDescription">
-             <string>Shows only services businesses</string>
-            </property>
-            <property name="text">
-             <string>Services</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QLabel" name="sort_label">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="font">
              <font>
+              <pointsize>10</pointsize>
               <bold>true</bold>
              </font>
             </property>
             <property name="text">
-             <string>Sort By Rating:</string>
+             <string>Sort:</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="ratings_descending_button">
-            <property name="accessibleName">
-             <string>Sort by rating: high to low</string>
+           <widget class="QComboBox" name="sort_dropdown">
+            <property name="editable">
+             <bool>false</bool>
             </property>
-            <property name="accessibleDescription">
-             <string>Sorts businesses by rating from highest to lowest</string>
+            <property name="currentText">
+             <string>Recommended</string>
+            </property>
+            <item>
+             <property name="text">
+              <string extracomment="hi">Recommended</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Rating (High to Low)</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Rating (Low to High)</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Distance</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="filter_label">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+              <bold>true</bold>
+             </font>
             </property>
             <property name="text">
-             <string>High to Low</string>
+             <string>Filter:</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="ratings_ascending_button">
-            <property name="accessibleName">
-             <string>Sort by rating: low to high</string>
-            </property>
-            <property name="accessibleDescription">
-             <string>Sorts businesses by rating from lowest to highest</string>
+           <widget class="QComboBox" name="category_dropdown">
+            <item>
+             <property name="text">
+              <string>All Categories</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Retail</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Food</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Entertainment</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Services</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="distance_dropdown">
+            <item>
+             <property name="text">
+              <string>Any Distance</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Within 5 Miles</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Within 10 Miles</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Within 25 Miles</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Within 50 Miles</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="reset_button">
+            <property name="maximumSize">
+             <size>
+              <width>75</width>
+              <height>16777215</height>
+             </size>
             </property>
             <property name="text">
-             <string>Low to High</string>
+             <string>Reset</string>
             </property>
            </widget>
           </item>

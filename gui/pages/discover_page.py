@@ -3,7 +3,7 @@ from PySide6.QtCore import Signal, QTimer
 from PySide6.QtGui import QFont
 
 from database import Business
-from services.business_services import get_all_businesses, run_search
+from services.business_services import get_all_businesses, run_search, get_distance_to_business
 # from services.user_services import get_recommendation_score
 
 from app_session import app_session
@@ -28,36 +28,29 @@ class DiscoverPage(QWidget):
         self.all_business_data : list[Business] = []
         self.card_list : list[BusinessCard] = []
 
-        self.ui.retail_button.clicked.connect(lambda: self.filter_cards_by_category("Retail"))
-        self.ui.food_button.clicked.connect(lambda: self.filter_cards_by_category("Food"))
-        self.ui.entertainment_button.clicked.connect(lambda: self.filter_cards_by_category("Entertainment"))
-        self.ui.services_button.clicked.connect(lambda: self.filter_cards_by_category("Services"))
+        self.ui.sort_dropdown.currentIndexChanged.connect(self.sort_dropdown_changed)
+        self.ui.category_dropdown.currentIndexChanged.connect(self.category_dropdown_changed)
+        self.ui.distance_dropdown.currentIndexChanged.connect(self.distance_dropdown_changed)
 
-        self.ui.ratings_descending_button.clicked.connect(lambda: self.sort_cards_by_rating(True))
-        self.ui.ratings_ascending_button.clicked.connect(lambda: self.sort_cards_by_rating(False))
+        self.ui.reset_button.clicked.connect(self.reset_parameters)
         
         # Creates a timer for the searchbar to add a short delay between keystrokes and running a search
         self.search_timer = QTimer()
         self.search_timer.setSingleShot(True)
-        self.search_timer.timeout.connect(self.run_search)
+        # self.search_timer.timeout.connect(self.run_search)
 
         self.ui.search_bar.textEdited.connect(self.on_text_edited)
 
-        # self.ui.chat_button.setParent(self)
-        # self.ui.chat_button.raise_()
-        # self.ui.chat_button.move(self.width() - 70, self.height() - 70)
-
-        self.chatbutton = QPushButton("Ask AI\nAssistant💬", self)
-        self.chatbutton.adjustSize()
-        # font1 = QFont()
-        # font1.setPointSize(1)
-        # self.chatbutton.setFont(font1)
-        self.chatbutton.resize(125, 60)
-        self.chatbutton.move(self.width() - 150, self.height() - 75)
-        self.chatbutton.raise_()
-
+        self.create_chat_button()
         self.chatbutton.clicked.connect(self.open_chat_window)
+
         self.chat_window = ChatWindow()
+
+        self.sort_mode = "recommended"
+        self.category_mode = "all_categories"
+        self.distance_mode = "any_distance"
+        
+
 
     # Removes all cards from the discover page
     def clear_cards(self):
@@ -75,32 +68,85 @@ class DiscoverPage(QWidget):
             self.ui.grid_layout.addWidget(card, i//3, i%3)
             self.card_list.append(card)
 
+    def refresh_cards(self):
+        data = self.all_business_data
+
+        data = self.apply_search(data)
+        data = self.apply_sort(data)
+        data = self.apply_category(data)
+        data = self.apply_distance(data)
+
+        self.populate_cards(data)
+        
+
     # Starts the search delay timer
     def on_text_edited(self):
         self.search_timer.start(200)
 
-    # Clears cards and then runs a search with the current text in the serach bar, populating the page with the results
-    def run_search(self):
-        self.clear_cards()
-        self.populate_cards(run_search(self.ui.search_bar.text().lower()))
+    def apply_search(self, data: list[Business]):
+        if self.ui.search_bar == "":
+            return data
         
-    # Goes through all businesses, selecting the ones of a certain category, and populates the page with the results
-    def filter_cards_by_category(self, category):
+        search_query = self.ui.search_bar.text().lower()
+        return run_search(search_query, data)
+    
+    def apply_sort(self, data: list[Business]):
+        if self.sort_mode == "recommended":
+            return app_session.recommendation_service.sort_some_businesses_by_rec_score(data)
+        elif self.sort_mode == "rating_desc":
+            return sorted(data, key=lambda b: b.avg_rating, reverse=True)
+        elif self.sort_mode == "rating_asc":
+            return sorted(data, key=lambda b: b.avg_rating)
+        elif self.sort_mode == "distance":
+            return sorted(data, key=lambda b: get_distance_to_business(b.id, app_session.cur_lat, app_session.cur_lon))
+        else:
+            return data
+
+    def apply_category(self, data: list[Business]):
+        if self.category_mode == "all_categories":
+            return data
+        
         approved_businesses = []
-        for business in self.all_business_data:
-            if business.category == category:
+        for business in data:
+            if business.category == self.category_mode:
                 approved_businesses.append(business)
 
-        self.populate_cards(approved_businesses)
-    
-    # Sorts all businesses by their rating (descending if param=True, else ascending), and populates the page with the results
-    def sort_cards_by_rating(self, descending):
-        sorted_businesses = sorted(self.all_business_data, key=lambda b: b.avg_rating, reverse=descending)
-        self.populate_cards(sorted_businesses)
+        return approved_businesses
 
-    def sort_cards_by_recommendation(self):
-        sorted_businesses = app_session.recommendation_service.sort_businesses_by_rec_score()
-        self.populate_cards(sorted_businesses)
+    def apply_distance(self, data: list[Business]):
+        if self.distance_mode == "any_distance":
+            return data
+
+        approved_businesses = []
+        for business in data:
+            business_dist = get_distance_to_business(business.id, app_session.cur_lat, app_session.cur_lon)
+            max_dist = int(self.distance_mode.split("_")[0])
+
+            if business_dist <= max_dist:
+                approved_businesses.append(business)
+
+        return approved_businesses
+
+
+    
+    def sort_dropdown_changed(self, new_index):
+        modes = ["recommended", "rating_desc", "rating_asc", "distance"]
+        self.sort_mode = modes[new_index]
+
+        self.refresh_cards()
+    
+    def category_dropdown_changed(self, new_index):
+        modes = ["all_categories", "retail", "food", "entertainment", "services"]
+        self.category_mode = modes[new_index]
+
+        self.refresh_cards()
+
+    def distance_dropdown_changed(self, new_index):
+        modes = ["any_distance", "5_miles", "10_miles", "25_miles", "50_miles"]
+        self.distance_mode = modes[new_index]
+
+        self.refresh_cards()
+        
 
     # Emits the business_selected signal, containing the business (which is passed from the business_card class)
     def card_clicked(self, business):
@@ -114,5 +160,21 @@ class DiscoverPage(QWidget):
         super().resizeEvent(event)
         self.chatbutton.move(self.width() - 150, self.height() - 75)
 
+    def create_chat_button(self):
+        self.chatbutton = QPushButton("Ask AI\nAssistant💬", self)
+        self.chatbutton.adjustSize()
+        self.chatbutton.resize(125, 60)
+        self.chatbutton.move(self.width() - 150, self.height() - 75)
+        self.chatbutton.raise_()
+
     def open_chat_window(self):
         self.chat_window.show()
+
+    def reset_parameters(self):
+        self.ui.search_bar.setText("")
+
+        self.ui.sort_dropdown.setCurrentIndex(0)
+        self.ui.category_dropdown.setCurrentIndex(0)
+        self.ui.category_dropdown.setCurrentIndex(0)
+
+        self.refresh_cards()

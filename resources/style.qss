@@ -1,4 +1,4 @@
-/* AROUNDTOWN Professional QSS Stylesheet - Dark Blue Theme */
+/* Stylesheet */
 
 /* Core containers - shared dark background */
 QWidget, QMainWindow, QDialog, QMessageBox {
@@ -343,47 +343,75 @@ QDialogButtonBox QPushButton {
 }
 
 /* COMBOBOX AND DROPDOWN STYLING */
+/* COMBOBOX STYLING */
 
 QComboBox {
     background-color: #1A1E3F;
     color: #E0E4FF;
     border: 2px solid #2D3750;
     border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 11pt;
+
+    font-size: 10pt;        /* Matches your other controls better */
+    font-weight: 500;
+
+    min-height: 22px;
+    padding: 4px 30px 4px 10px;
 }
 
 QComboBox:hover {
-    border: 2px solid #2D7FD1;
+    border: 2px solid #4A9EFF;
 }
 
 QComboBox:focus {
     border: 2px solid #4A9EFF;
 }
 
+QComboBox:on {
+    background-color: #0F1229;
+}
+
+/* Dropdown button */
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+
+    width: 24px;
+
+    border: none;
+    border-left: 1px solid #2D3750;
+    background-color: #1A1E3F;
+}
+
+/* Use a normal arrow instead of the blue square */
 QComboBox::down-arrow {
     image: none;
-    background-color: #4A9EFF;
-    width: 12px;
-    height: 12px;
-    border-radius: 2px;
+    width: 0px;
+    height: 0px;
+
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #8E94B8;
 }
 
-QComboBox::drop-down {
-    border: none;
-    background-color: transparent;
-    padding-right: 8px;
+QComboBox::down-arrow:hover {
+    border-top: 6px solid #4A9EFF;
 }
 
+/* Dropdown list */
 QComboBox QAbstractItemView {
     background-color: #1A1E3F;
     color: #E0E4FF;
+
     border: 1px solid #2D3750;
     outline: none;
+
+    selection-background-color: #4A9EFF;
+    selection-color: white;
 }
 
 QComboBox QAbstractItemView::item {
-    padding: 6px 10px;
+    min-height: 24px;
+    padding: 4px 10px;
 }
 
 QComboBox QAbstractItemView::item:hover {

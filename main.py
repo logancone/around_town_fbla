@@ -21,7 +21,7 @@ def gui_init():
 def main():
     if os.path.exists("app_database.db"):
         os.remove("app_database.db")
-        
+
     create_tables()
 
     # generate_all_fake_data()

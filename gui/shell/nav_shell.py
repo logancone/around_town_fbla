@@ -35,6 +35,9 @@ class NavShell(QWidget):
         self.ui.page_stack.addWidget(self.business_page)
         self.ui.page_stack.addWidget(self.profile_page)
 
+        self.discover_page.load_all_business_data()
+        self.discover_page.refresh_cards()
+
         self.set_discover_page()
 
         self.discover_page.business_selected.connect(self.set_business_page)
@@ -44,12 +47,13 @@ class NavShell(QWidget):
 
         user_id = app_session.user_id
         self.profile_page.load_profile(user_id)
+
+        
     
     # Sets current page to the discover page, along with loading all cards.
     def set_discover_page(self):
         app_session.leave_business()
-        self.discover_page.load_all_business_data()
-        self.discover_page.sort_cards_by_recommendation()
+        # self.discover_page.sort_cards_by_recommendation()
         self.ui.page_stack.setCurrentWidget(self.discover_page)
 
     # Sets current page to the business page, loading all business info

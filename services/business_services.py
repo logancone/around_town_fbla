@@ -5,6 +5,8 @@ from datetime import date
 
 from rapidfuzz.distance import DamerauLevenshtein
 
+from geopy.distance import great_circle
+
 # Business services include any database queries/updates that mainly pertain to businesses
 
 # Adds a new business to Business table
@@ -120,12 +122,11 @@ def get_tag_from_id(tag_id):
         assert tag
         return tag.tag_name
 
-def run_search(query):
+def run_search(query, business_list: list[Business]):
     with Session() as session:
         query = query.lower()
-        stmt = select(Business)
         results = []
-        for business in session.scalars(stmt):
+        for business in business_list:
             score = 0
             
             # Name
@@ -176,3 +177,16 @@ def run_search(query):
 def get_business_from_id(business_id):
     with Session() as session:
         return session.get(Business, business_id)
+    
+
+def get_distance_to_business(business_id, user_lat, user_lon):
+    with Session() as session:
+        b = session.get(Business, business_id)
+        assert b
+
+        user_coords = (user_lat, user_lon)
+        business_coords = (b.lat, b.lon)
+        
+        dist = great_circle(user_coords, business_coords)
+
+        return dist.miles

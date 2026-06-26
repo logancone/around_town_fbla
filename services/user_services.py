@@ -88,31 +88,31 @@ def is_username_available(username):
         else:
             return False
 
-def generate_user_report(user_id):
+def generate_user_report(user_id, user_info: bool, bookmarked_businesses: bool, owned_businesses: bool, review_history: bool):
+    print("woohoooo", user_info, bookmarked_businesses, owned_businesses, review_history)
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = f"UserReport_{timestamp}.pdf"
 
-    with Session() as session:
-        user = session.get(User, user_id)
+ 
+    user = get_user_from_id(user_id)
 
-        businesses_stmt = select(Business).where(Business.owner_id == user_id)
-        businesses_list = session.execute(businesses_stmt).scalars()
+    bookmarked_businesses_list = get_users_bookmarked_businesses(user_id)
+    owned_businesses_list = get_users_owned_businesses(user_id)
+    reveiws_list = get_users_reviews(user_id)
 
-        reviews_stmt = select(Review).where(Review.user_id == user_id)
-        reviews_list = session.execute(reviews_stmt).scalars()
+    assert user
 
-        assert user
+    doc = SimpleDocTemplate(filename, pagesize=letter)
+    styles = getSampleStyleSheet()
 
-        doc = SimpleDocTemplate(filename, pagesize=letter)
-        styles = getSampleStyleSheet()
+    elements = []
 
-        elements = []
+    # Title (username)
+    elements.append(Paragraph(f"<b>User Report: {user.username}</b>", styles["Heading1"]))
+    elements.append(Spacer(1, 12))
 
-        # Title (username)
-        elements.append(Paragraph(f"<b>User Report: {user.username}</b>", styles["Heading1"]))
-        elements.append(Spacer(1, 12))
-
-        # User info
+    # User info
+    if user_info:
         elements.append(Paragraph("<b>User Information</b>", styles["Heading2"]))
         elements.append(Spacer(1, 6))
 
@@ -128,16 +128,51 @@ def generate_user_report(user_id):
         ]))
 
         elements.append(user_info_table)
-        elements.append(Spacer(1, 20))
+        elements.append(Spacer(1, 50))
 
-        # Owned Businessess
+    if bookmarked_businesses:
+        elements.append(Paragraph("<b>Bookmarked Businesses</b>", styles["Heading2"]))
+        elements.append(Spacer(1, 10))
+
+        if not bookmarked_businesses_list:
+            elements.append(Paragraph("No businesses bookmarked.", styles["BodyText"]))
+        else:
+            for b in bookmarked_businesses_list:
+                elements.append(Paragraph(f"<b>{b.name}</b>", styles["Heading3"]))
+                elements.append(Spacer(1, 5))
+
+                # thumbnail image (optional fail-safe)
+                try:
+                    img = Image(b.thumbnail_link, width=80, height=80)
+                    elements.append(img)
+                except:
+                    pass
+
+                biz_table = Table([
+                    ["Category", b.category],
+                    ["Rating", str(b.avg_rating)],
+                    ["Description", Paragraph(b.business_description, styles["BodyText"])],
+                ])
+
+                biz_table.setStyle(TableStyle([
+                    ("BOX", (0, 0), (-1, -1), 1, colors.black),
+                    ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                ]))
+
+                elements.append(biz_table)
+                elements.append(Spacer(1, 15))
+            
+        elements.append(Spacer(1, 50))
+    
+    # Owned Businessess
+    if owned_businesses:
         elements.append(Paragraph("<b>Owned Businesses</b>", styles["Heading2"]))
         elements.append(Spacer(1, 10))
 
-        if not businesses_list:
+        if not owned_businesses_list:
             elements.append(Paragraph("No businesses owned.", styles["BodyText"]))
         else:
-            for b in businesses_list:
+            for b in owned_businesses_list:
                 elements.append(Paragraph(f"<b>{b.name}</b>", styles["Heading3"]))
                 elements.append(Spacer(1, 5))
 
@@ -162,17 +197,20 @@ def generate_user_report(user_id):
                 elements.append(biz_table)
                 elements.append(Spacer(1, 15))
 
-        elements.append(PageBreak())
+        elements.append(Spacer(1, 50))
 
-        # User reviews
+        
+
+    # User reviews
+    if review_history:
         elements.append(Paragraph("<b>User Reviews</b>", styles["Heading1"]))
         elements.append(Spacer(1, 10))
 
-        if not reviews_list:
+        if not reveiws_list:
             elements.append(Paragraph("No reviews posted.", styles["BodyText"]))
         else:
-            for r in reviews_list:
-                b = session.get(Business, r.business_id)
+            for r in reveiws_list:
+                b = get_business_from_id(r.business_id)
                 assert b
                 elements.append(Paragraph(f"<b>{b.name}</b>", styles["Heading3"]))
                 elements.append(Paragraph(f"Rating: ⭐ {r.rating}", styles["BodyText"]))
@@ -180,10 +218,13 @@ def generate_user_report(user_id):
                 elements.append(Paragraph(r.content, styles["BodyText"]))
                 elements.append(Spacer(1, 12))
 
-        # Build
-        doc.build(elements)
+    # Build
+    doc.build(elements)
 
-        open_file(filename)
+    open_file(filename)
+
+    print("interesting")
+
 
 def open_file(path):
     if sys.platform.startswith("win"):
@@ -206,12 +247,18 @@ def toggle_bookmark(user_id, business_id):
                 session.add(new_bookmark)
 
 # Returns a set of all the business ids a user has bookmarked
-def get_users_bookmarked_businesses(user_id):
+def get_users_bookmarked_business_ids(user_id: int) -> set[int]:
     with Session() as session:
         stmt = select(Bookmark.business_id).where(Bookmark.user_id == user_id)
 
         return set(session.scalars(stmt).all())
 
+def get_users_bookmarked_businesses(user_id:int) -> list[Business]:
+    with Session() as session:
+        stmt = select(Business).join(Bookmark, Bookmark.business_id == Business.id).where(Bookmark.user_id == user_id)
+        
+        businesses = list(session.scalars(stmt).all())
+        return businesses
 
 def check_if_bookmark(user_id, business_id):
     with Session() as session:
@@ -228,9 +275,17 @@ def get_users_reviews(user_id):
 
         return session.scalars(stmt).all()
 
+def get_users_owned_businesses(user_id: int) -> list[Business]:
+    with Session() as session:
+        stmt = select(Business).where(Business.owner_id == user_id)
+        businesses = list(session.scalars(stmt).all())
+        return businesses
 
-
-
+def get_user_from_id(user_id: int) -> User:
+    with Session() as session:
+        user = session.get(User, user_id)
+        assert user
+        return user
 # Create a class to score recommendation data (tags/categories and matching scores)
 class RecommendationService:
 
@@ -242,19 +297,21 @@ class RecommendationService:
 
         if self.user_id is not None:
             self.build_profile()
-            self.sort_businesses_by_rec_score()
+            self.sort_all_businesses_by_rec_score()
 
     # Clears recommendation profile
     def clear(self):
         self.tag_scores.clear()
         self.category_scores.clear()
+        self.sorted_businesses.clear()
 
     # Goes through users reviews to build a new profile
     def build_profile(self):
         self.clear()
+        assert self.user_id
 
         reviews = get_users_reviews(self.user_id)
-        bookmarks = get_users_bookmarked_businesses(self.user_id)
+        bookmark_ids = get_users_bookmarked_business_ids(self.user_id)
 
         for review in reviews:
             # Assigns the tag score appropriately (5=2, 4=1, 3=0, 2=-0.25, 1=-0.5, etc.) and works for half star ratings
@@ -274,12 +331,12 @@ class RecommendationService:
             category = b.category
             self.category_scores[category] = self.category_scores.get(category, 0) + preference_score
         
-        for bookmark in bookmarks:
-            tags = get_tags_from_business(bookmark)
+        for id in bookmark_ids:
+            tags = get_tags_from_business(id)
             for tag in tags:
                 self.tag_scores[tag] = self.tag_scores.get(tag, 0) + 1.5
             
-            b = get_business_from_id(bookmark)
+            b = get_business_from_id(id)
             assert b is not None
             
             category = b.category
@@ -306,10 +363,14 @@ class RecommendationService:
         total_score = tag_score + (category_score * 0.25)
         return total_score
     
-    def sort_businesses_by_rec_score(self):
+    def sort_all_businesses_by_rec_score(self):
         all_businesses = get_all_businesses()
         self.sorted_businesses = sorted(all_businesses, key=lambda b:self.get_recommendation_score(b.id))
         return self.sorted_businesses
+    
+    def sort_some_businesses_by_rec_score(self, businesses):
+        sorted_businesses = sorted(businesses, key=lambda b:self.get_recommendation_score(b.id))
+        return sorted_businesses
     
     def create_ai_context_file(self):
         top_positive_tags = [

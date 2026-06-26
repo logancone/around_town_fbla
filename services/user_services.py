@@ -89,7 +89,6 @@ def is_username_available(username):
             return False
 
 def generate_user_report(user_id, user_info: bool, bookmarked_businesses: bool, owned_businesses: bool, review_history: bool):
-    print("woohoooo", user_info, bookmarked_businesses, owned_businesses, review_history)
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = f"UserReport_{timestamp}.pdf"
 
@@ -222,8 +221,6 @@ def generate_user_report(user_id, user_info: bool, bookmarked_businesses: bool, 
     doc.build(elements)
 
     open_file(filename)
-
-    print("interesting")
 
 
 def open_file(path):

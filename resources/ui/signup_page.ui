@@ -93,7 +93,7 @@
       <item>
        <widget class="QLineEdit" name="confirm_password_entry">
         <property name="accessibleName">
-         <string>Password</string>
+         <string>Confirm Password</string>
         </property>
         <property name="accessibleDescription">
          <string>Enter your new password again</string>

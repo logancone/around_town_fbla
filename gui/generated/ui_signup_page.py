@@ -177,7 +177,7 @@ class Ui_Form(object):
 #endif // QT_CONFIG(accessibility)
         self.password_entry.setPlaceholderText(QCoreApplication.translate("Form", u"Password", None))
 #if QT_CONFIG(accessibility)
-        self.confirm_password_entry.setAccessibleName(QCoreApplication.translate("Form", u"Password", None))
+        self.confirm_password_entry.setAccessibleName(QCoreApplication.translate("Form", u"Confirm Password", None))
 #endif // QT_CONFIG(accessibility)
 #if QT_CONFIG(accessibility)
         self.confirm_password_entry.setAccessibleDescription(QCoreApplication.translate("Form", u"Enter your new password again", None))

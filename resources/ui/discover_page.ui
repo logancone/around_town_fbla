@@ -138,6 +138,12 @@
           </item>
           <item>
            <widget class="QComboBox" name="sort_dropdown">
+            <property name="accessibleName">
+             <string>Sort Dropdown Menu</string>
+            </property>
+            <property name="accessibleDescription">
+             <string>Open to choose a parameter to sort businesses by</string>
+            </property>
             <property name="editable">
              <bool>false</bool>
             </property>
@@ -193,6 +199,12 @@
           </item>
           <item>
            <widget class="QComboBox" name="category_dropdown">
+            <property name="accessibleName">
+             <string>Category Filter Dropdown Menu</string>
+            </property>
+            <property name="accessibleDescription">
+             <string>Open to select a category filter</string>
+            </property>
             <item>
              <property name="text">
               <string>All Categories</string>
@@ -222,6 +234,12 @@
           </item>
           <item>
            <widget class="QComboBox" name="distance_dropdown">
+            <property name="accessibleName">
+             <string>Distance Filter Dropdown Menu</string>
+            </property>
+            <property name="accessibleDescription">
+             <string>Open to select a distance to filter by</string>
+            </property>
             <item>
              <property name="text">
               <string>Any Distance</string>
@@ -256,6 +274,9 @@
               <width>75</width>
               <height>16777215</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Resets all discover parameters</string>
             </property>
             <property name="text">
              <string>Reset</string>

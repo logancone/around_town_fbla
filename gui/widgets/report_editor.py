@@ -24,8 +24,6 @@ class ReportEditor(QDialog):
         bookmarked_businesses = self.ui.bookmarked_businesses.isChecked()
         owned_businesses = self.ui.owned_businesses.isChecked()
         review_history = self.ui.review_history.isChecked()
-
-        print("hmmm")
         
         generate_user_report(user_id, user_info, bookmarked_businesses, owned_businesses, review_history)
         

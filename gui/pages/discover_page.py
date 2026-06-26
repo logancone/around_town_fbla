@@ -37,9 +37,10 @@ class DiscoverPage(QWidget):
         # Creates a timer for the searchbar to add a short delay between keystrokes and running a search
         self.search_timer = QTimer()
         self.search_timer.setSingleShot(True)
-        # self.search_timer.timeout.connect(self.run_search)
+        self.search_timer.timeout.connect(self.refresh_cards)
 
         self.ui.search_bar.textEdited.connect(self.on_text_edited)
+        self.ui.search_bar.returnPressed.connect(self.refresh_cards)
 
         self.create_chat_button()
         self.chatbutton.clicked.connect(self.open_chat_window)

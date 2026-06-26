@@ -175,6 +175,6 @@ class DiscoverPage(QWidget):
 
         self.ui.sort_dropdown.setCurrentIndex(0)
         self.ui.category_dropdown.setCurrentIndex(0)
-        self.ui.category_dropdown.setCurrentIndex(0)
+        self.ui.distance_dropdown.setCurrentIndex(0)
 
         self.refresh_cards()

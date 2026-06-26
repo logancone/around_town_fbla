@@ -11,6 +11,7 @@ import os
 
 def gui_init():
     app = QApplication()
+    
     with open("resources/style.qss", "r", encoding='utf-8') as f:
         app.setStyleSheet(f.read())
 

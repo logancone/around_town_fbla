@@ -25,8 +25,8 @@ def main():
 
     create_tables()
 
-    # generate_all_fake_data()
-    generate_some_fake_data()
+    generate_all_fake_data()
+    # generate_some_fake_data()
 
     gui_init()
 

@@ -122,14 +122,27 @@ def get_tag_from_id(tag_id):
         assert tag
         return tag.tag_name
 
-def run_search(query, business_list: list[Business]):
+def run_search(query: str, business_list: list[Business]) -> list[Business]:
+    """Runs a search with a given query on a list of businesses, retrieving the
+        most relevant businesses. Utilizes a multi-stage search algorithm, including business
+        title, tags, category, and description. Also, uses Damerau-Levenshtein string similarity
+        metric for typo-detection. Only businesses above a certain dynamic threshold are returned.
+
+    Args:
+        query (str): The search input
+        business_list (list[Business]): A list of business objects to search through
+
+    Returns:
+        list[Business]: A list containing business objects of any matching businesses, 
+            ranked by relevance to the search query
+    """
     with Session() as session:
         query = query.lower()
         results = []
         for business in business_list:
             score = 0
             
-            # Name
+            # Business Name
             if business.name.lower() == query:
                 score += 1000
             elif business.name.lower().startswith(query):
@@ -163,10 +176,12 @@ def run_search(query, business_list: list[Business]):
 
             results.append((score, session.get(Business, business.id)))
 
+        # Sort all results by their score to determine max score
         results.sort(reverse=True, key=lambda x: x[0])
-        business_data_list = []
         max_score = results[0][0]
+        business_data_list: list[Business] = []
 
+        # Only add items that are within 30% of max value (or above 25 if all scores are low)
         for item in results:
             if item[0] >= max(max_score * 0.3, 25):
                 business_data_list.append(item[1])

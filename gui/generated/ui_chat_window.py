@@ -80,6 +80,8 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.title_label.setText(QCoreApplication.translate("Form", u"AI Assistant", None))
+        self.chat_input.setInputMask("")
+        self.chat_input.setText(QCoreApplication.translate("Form", u"Give me a business recommendation, explain it, and give me more details about the chosen business.", None))
         self.chat_input.setPlaceholderText(QCoreApplication.translate("Form", u"Type your message here...", None))
         self.send_button.setText(QCoreApplication.translate("Form", u"Send!", None))
         self.warning_label.setText("")

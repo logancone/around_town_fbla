@@ -92,21 +92,7 @@ business_names = [
     "Brake & Tire Depot",
     "ByteFix Computer Repair"
 ]
-# business_names = [
-#     "logans lit bowling",
-#     "freds food",
-#     "johns jellies",
-#     "billys barbershop",
-#     "sarahs sweet treats",
-#     "mikes bike repair",
-#     "emmas art corner",
-#     "chris retro arcade",
-#     "olivias outdoor gear",
-#     "daves detailing",
-#     "lilys library lounge",
-#     "noahs tech hub",
-#     "zoes fitness studio"
-# ]
+
 os.makedirs(output_folder, exist_ok=True)
 
 def safe_filename(name):

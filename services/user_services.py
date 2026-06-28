@@ -232,7 +232,6 @@ def open_file(path):
         subprocess.call(["xdg-open", path])
 
 
-
 def toggle_bookmark(user_id, business_id):
     with Session() as session:
         with session.begin():
@@ -302,7 +301,7 @@ class RecommendationService:
         self.category_scores.clear()
         self.sorted_businesses.clear()
 
-    # Goes through users reviews to build a new profile
+    # Goes through users reviews to build a new recommendation profile
     def build_profile(self):
         self.clear()
         assert self.user_id
@@ -477,7 +476,7 @@ class AIService:
             "why", "explain", "how", "compare",
             "vs", "difference", "should i"
         ]):
-            return "medium"
+            return "low"
 
         # recommendation / decision queries
         if any(k in msg for k in [

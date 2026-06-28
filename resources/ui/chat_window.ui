@@ -52,6 +52,12 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLineEdit" name="chat_input">
+       <property name="inputMask">
+        <string/>
+       </property>
+       <property name="text">
+        <string>Give me a business recommendation, explain it, and give me more details about the chosen business.</string>
+       </property>
        <property name="placeholderText">
         <string>Type your message here...</string>
        </property>

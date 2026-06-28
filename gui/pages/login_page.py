@@ -22,7 +22,7 @@ class LoginPage(QWidget):
         self.ui.signup_button.clicked.connect(self.signup_request.emit)
 
     # Return True if username and password are valid inputs (at least 1 character), else return false
-    def validate_login_input(self, username, password):
+    def validate_login_input(self, username: str, password: str) -> bool:
         # Ensure both fields have text
         if len(username) == 0 or len(password) == 0:
             self.ui.error_label.setText("Please fill out all fields!")

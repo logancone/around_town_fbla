@@ -26,7 +26,7 @@ class BusinessCard(QFrame):
         self.id = business.id
 
         self.ui.title.setText(business.name)
-        self.ui.category.setText(business.category)
+        self.ui.category.setText(business.category.capitalize())
 
         # Create and set rating string
         if business.rating_count > 0:

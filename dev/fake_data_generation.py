@@ -872,6 +872,103 @@ sample_review_texts = (
     ]
     )
 
+preset_tags = [
+    'Restaurant',
+    'Fast Food',
+    'Cafe',
+    'Coffee',
+    'Bakery',
+    'Dessert',
+    'Pizza',
+    'Burger',
+    'Sandwich',
+    'Ice Cream',
+    'Barbecue',
+    'Asian Cuisine',
+    'Mexican Cuisine',
+    'Italian Cuisine',
+    'Seafood',
+    'Vegan',
+    'Healthy Food',
+    'Bowling',
+    'Arcade',
+    'Cinema',
+    'Amusement Park',
+    'Escape Room',
+    'Mini Golf',
+    'Live Music',
+    'Theater',
+    'Sports Venue',
+    'Gaming',
+    'VR Experience',
+    'Karaoke',
+    'Clothing',
+    'Shoes',
+    'Electronics',
+    'Bookstore',
+    'Grocery Store',
+    'Convenience Store',
+    'Furniture',
+    'Home Goods',
+    'Jewelry',
+    'Sporting Goods',
+    'Thrift Store',
+    'Gym',
+    'Yoga',
+    'Martial Arts',
+    'Personal Training',
+    'Sports Club',
+    'Physical Therapy',
+    'Spa',
+    'Wellness',
+    'Tutoring',
+    'School',
+    'College Prep',
+    'Music Lessons',
+    'Art Classes',
+    'STEM Learning',
+    'Driving School',
+    'Language Learning',
+    'Hair Salon',
+    'Barber Shop',
+    'Nail Salon',
+    'Auto Repair',
+    'Car Wash',
+    'Insurance',
+    'Legal Services',
+    'Financial Services',
+    'Real Estate',
+    'Cleaning Services',
+    'Pet Grooming',
+    'Veterinary',
+    'Car Dealership',
+    'Auto Parts',
+    'Oil Change',
+    'Tire Shop',
+    'Motorcycle Service',
+    'Computer Repair',
+    'Software Services',
+    'IT Services',
+    'Gaming Store',
+    'Electronics Repair',
+    'Family Friendly',
+    'Date Night',
+    'Birthday Parties',
+    'Event Hosting',
+    'Nightlife',
+    'Outdoor Activities',
+    'Cheap',
+    'Mid Range',
+    'Luxury',
+    'Local Owned',
+    'Chain',
+    'Open Late',
+    'Takeout',
+    'Delivery',
+    'Dine In',
+    'Outdoor Seating',
+    'Wheelchair Accessible'
+]
 
 def add_fake_users():
     for username in sample_usernames:
@@ -922,10 +1019,8 @@ def add_fake_reviews():
             add_review(user_id, business_id, rating, review_text)
 
 def add_preset_tags():
-    with open("dev/preset_tags.txt", encoding='utf-8') as file:
-        for line in file:
-            if line.strip() != "":
-                add_preset_tag(line.strip())
+    for tag in preset_tags:
+        add_preset_tag(tag)
 
 def set_fake_tags():
     for index, business in enumerate(sample_businesses):

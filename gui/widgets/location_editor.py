@@ -32,10 +32,10 @@ class LocationEditor(QDialog):
         else:
             return False       
 
+    # 
     def set_new_location(self):
         if self.validate_input():
-            app_session.cur_lat = float(self.ui.latitude_input.text().strip())
-            app_session.cur_lon = float(self.ui.longitude_input.text().strip())
+            app_session.update_user_location(float(self.ui.latitude_input.text().strip()), float(self.ui.longitude_input.text().strip()))
             super().accept()
         else:
             self.ui.error_label.setText("Invalid Input! Please try again.")

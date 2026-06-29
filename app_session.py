@@ -1,4 +1,4 @@
-from services.user_services import get_users_bookmarked_business_ids, RecommendationService, get_user_from_id
+from services.user_services import get_users_bookmarked_business_ids, RecommendationService, get_user_from_id, update_user_location
 
 from dataclasses import dataclass, field
 
@@ -31,6 +31,12 @@ class AppSession():
     def update_recommendation_service(self):
         assert self.recommendation_service
         self.recommendation_service.build_profile()
+
+    def update_user_location(self, new_lat, new_lon):
+        self.cur_lat = new_lat
+        self.cur_lon = new_lon
+        update_user_location(self.user_id, new_lat, new_lon)
+
     
     def is_business_bookmarked(self, business_id):
         return business_id in self.users_bookmarks

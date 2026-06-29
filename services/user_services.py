@@ -286,7 +286,13 @@ def get_user_from_id(user_id: int) -> User:
         assert user
         return user
 
-
+def update_user_location(user_id: int, new_lat: float, new_lon: float):
+    with Session() as session:
+        with session.begin():
+            user = session.get(User, user_id)
+            assert user
+            user.lat = new_lat
+            user.lon = new_lon
 
 # Create a class to score recommendation data (tags/categories and matching scores)
 class RecommendationService:

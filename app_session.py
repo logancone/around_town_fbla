@@ -1,4 +1,4 @@
-from services.user_services import get_users_bookmarked_business_ids, RecommendationService
+from services.user_services import get_users_bookmarked_business_ids, RecommendationService, get_user_from_id
 
 from dataclasses import dataclass, field
 
@@ -10,9 +10,8 @@ class AppSession():
         self.business_id = -1
         self.users_bookmarks = set()
 
-        # CHANGE TO DYNAMIC!!!
-        self.cur_lat = 37.0479891178922
-        self.cur_lon = -76.4984552293407
+        self.cur_lat = None
+        self.cur_lon = None
 
         self.recommendation_service = RecommendationService(None)
 
@@ -20,6 +19,10 @@ class AppSession():
         self.user_id = new_id
         self.users_bookmarks = get_users_bookmarked_business_ids(new_id)
         self.recommendation_service = RecommendationService(new_id)
+        user = get_user_from_id(new_id)
+        if user.lat is not None and user.lon is not None:
+            self.cur_lat = user.lat
+            self.cur_lon = user.lon
     
     def update_user_bookmarks(self):
         self.users_bookmarks = get_users_bookmarked_business_ids(self.user_id)
@@ -36,6 +39,8 @@ class AppSession():
         self.user_id = -1
         self.users_bookmarks = set()
         self.recommendation_service = RecommendationService(None)
+        self.cur_lat = None
+        self.cur_lon = None
     
     def set_business_id(self, new_id):
         self.business_id = new_id

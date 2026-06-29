@@ -972,7 +972,7 @@ preset_tags = [
 
 def add_fake_users():
     for username in sample_usernames:
-        add_user(username, "password")
+        add_user(username, "password", 37.0479891178922, -76.4984552293407)
 
 def add_fake_businesses():
     for index, business in enumerate(sample_businesses):
@@ -1016,6 +1016,8 @@ def add_fake_reviews():
 
         for user_id, (rating, template) in zip(reviewer_ids, text_sets):
             review_text = template.format(title=business["title"])
+            #Add noise
+            rating = min(rating + (rnd.randint(0,1)-.5)*rnd.randint(-1, 1), 5)
             add_review(user_id, business_id, rating, review_text)
 
 def add_preset_tags():
@@ -1039,7 +1041,7 @@ DATA_AMOUNT = 15
 
 def add_some_fake_users():
     for username in sample_usernames[:DATA_AMOUNT]:
-        add_user(username, "password")
+        add_user(username, "password", 37.0479891178922, -76.4984552293407)
 
 def add_some_fake_businesses():
     for index, business in enumerate(sample_businesses[:DATA_AMOUNT]):
@@ -1084,6 +1086,8 @@ def add_some_fake_reviews():
 
         for user_id, (rating, template) in zip(reviewer_ids, text_sets):
             review_text = template.format(title=business["title"])
+            #Add noise
+            rating = min(rating + (rnd.randint(0,1)-.5)*rnd.randint(-1, 1), 5)
             add_review(user_id, business_id, rating, review_text)
 
 def set_some_fake_tags():

@@ -99,7 +99,9 @@ class DiscoverPage(QWidget):
         elif self.sort_mode == "rating_asc":
             return sorted(data, key=lambda b: b.avg_rating)
         elif self.sort_mode == "distance":
-            return sorted(data, key=lambda b: get_distance_to_business(b.id, app_session.cur_lat, app_session.cur_lon))
+            if app_session.cur_lat is None or app_session.cur_lon is None:
+                return data
+            return sorted(data, key=lambda b: get_distance_to_business(b.id, app_session.cur_lat, app_session.cur_lon)) #type: ignore
         else:
             return data
 
@@ -116,6 +118,8 @@ class DiscoverPage(QWidget):
 
     def apply_distance(self, data: list[Business]):
         if self.distance_mode == "any_distance":
+            return data
+        if app_session.cur_lat is None or app_session.cur_lon is None:
             return data
 
         approved_businesses = []

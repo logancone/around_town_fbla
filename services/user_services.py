@@ -39,7 +39,7 @@ import json
 # User services include any database queries/updates that mainly pertain to the user
 
 # Adds a new user to User table and returns its id, storing the password as a hash
-def add_user(username, password):
+def add_user(username, password, lat, lon):
     """Adds a new user to the User table.
     
     Returns:
@@ -47,7 +47,7 @@ def add_user(username, password):
     """
     with Session() as session:
         with session.begin():
-            new_user = User(username=username, password_hash=generate_password_hash(password), created_on=date.today())
+            new_user = User(username=username, password_hash=generate_password_hash(password), lat=lat, lon=lon, created_on=date.today())
             session.add(new_user)
             session.flush()
             
@@ -117,7 +117,10 @@ def generate_user_report(user_id, user_info: bool, bookmarked_businesses: bool, 
 
         user_info_table = Table([
             ["Username", user.username],
-            ["Created Date", str(user.created_on)]
+            ["Created Date", str(user.created_on)],
+            ["Latitude", user.lat],
+            ["Longitude", user.lon]
+
         ])
 
         user_info_table.setStyle(TableStyle([
@@ -282,6 +285,9 @@ def get_user_from_id(user_id: int) -> User:
         user = session.get(User, user_id)
         assert user
         return user
+
+
+
 # Create a class to score recommendation data (tags/categories and matching scores)
 class RecommendationService:
 

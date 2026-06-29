@@ -12,6 +12,7 @@ from gui.generated.ui_profile_page import Ui_Form as profile_page
 
 from gui.widgets.business_card import BusinessCard
 from gui.widgets.report_editor import ReportEditor
+from gui.widgets.location_editor import LocationEditor
 
 from app_session import app_session
 
@@ -31,6 +32,7 @@ class ProfilePage(QWidget):
         self.bookmark_list: list[BusinessCard] = []
 
         self.ui.report_gen_button.clicked.connect(self.open_report_editor)
+        self.ui.settings_button.clicked.connect(self.open_location_editor)
 
     # Clears all the cards by iterating through bookmark list
     def clear_bookmarks(self):
@@ -61,6 +63,11 @@ class ProfilePage(QWidget):
     # Creates a pop-up for the user to edit report information
     def open_report_editor(self):
         editor = ReportEditor()
+        editor.exec()
+
+    # Creates a pop-up for the user to edit location information
+    def open_location_editor(self):
+        editor = LocationEditor()
         editor.exec()
     
     # Emit the signal if the user presses a business card

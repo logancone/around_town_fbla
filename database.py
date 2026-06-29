@@ -19,6 +19,8 @@ class User(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(unique=True)
     password_hash: Mapped[str]
+    lat: Mapped[float | None]
+    lon: Mapped[float | None]
     created_on: Mapped[date] = mapped_column(Date)
 
 # Create table for businesses
@@ -47,18 +49,21 @@ class Review(Base):
     content: Mapped[str]
     timestamp: Mapped[date] = mapped_column(Date)
 
+# Create table for bookmarks
 class Bookmark(Base):
     __tablename__ = 'bookmarks'
 
     user_id: Mapped[int] = mapped_column(ForeignKey(User.id), primary_key=True)
     business_id: Mapped[int] = mapped_column(ForeignKey(Business.id), primary_key=True)
 
+# Create table to store each preset tag
 class Tag(Base):
     __tablename__ = 'tags'
 
     id:Mapped[int] = mapped_column(primary_key=True)
     tag_name: Mapped[str] = mapped_column(unique=True)
 
+# Create table to store each businesses' references to their tags
 class BusinessTag(Base):
     __tablename__ = 'business_tags'
 
@@ -71,5 +76,5 @@ def create_tables():
 
 # Creates the engine and the Session class, doesn't actually create a session though
 engine = create_engine("sqlite:///app_database.db")
-# engine = create_engine("sqlite:///:memory:")
+
 Session = sessionmaker(bind=engine)

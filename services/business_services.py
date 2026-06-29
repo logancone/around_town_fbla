@@ -10,14 +10,37 @@ from geopy.distance import great_circle
 # Business services include any database queries/updates that mainly pertain to businesses
 
 # Adds a new business to Business table
-def add_business(name, owner_id, category, thumbnail_link, business_description, lat, lon):
+def add_business(name: str, owner_id: int, category: str, thumbnail_link: str, business_description:str, lat: float, lon: float):
+    """Adds a new business to the Business table.
+
+    Args:
+        name (str): The name of the business.
+        owner_id (int): The user_id of the business owner.
+        category (str): The category of the business (must be 'food', 'retail', 'entertainment', or 'services').
+        thumbnail_link (str): The path to the desired business thumbnail (usually begins with resources/images/business_thumbnails/).
+        business_description (str): The description for the business.
+        lat (float): The latitude of the business.
+        lon (float): The longitude of the business.
+
+    """
     with Session() as session:
         with session.begin():
             new_business = Business(name=name, owner_id=owner_id, category=category, thumbnail_link=thumbnail_link, business_description=business_description, lat=lat, lon=lon)
             session.add(new_business)
 
 # Adds a new review to Review table
-def add_review(user_id, business_id, rating, content):
+def add_review(user_id: int, business_id: int, rating: float, content: str):
+    """Adds a new review to the Review table.
+
+    Args:
+        user_id (int): The user_id of the reviewer.
+        business_id (int): The business_id of the business being reviewed.
+        rating (float): The rating the user gave the business (0-5).
+        content (str): The contents of the user's review.
+    
+    Raises:
+        AssertionError: If business_id doesn't correspond to a real business in the database.
+    """
     with Session() as session:
         with session.begin():
             new_review = Review(user_id=user_id, business_id=business_id, rating=rating, content=content, timestamp=date.today())
@@ -38,53 +61,56 @@ def add_review(user_id, business_id, rating, content):
             business.avg_rating = round(result.rating, 1)
             business.rating_count = result.num
             
-   
-# UPDATE THIS
-# Pulls business, rating, and bookmark data for every business, returning a list of BusinessData objects for every business in the database
-def get_all_businesses():
+def get_all_businesses() -> list[Business]:
+    """Retreives a list of all Business objects from the database.
+
+    Returns:
+        list[Business]: A list of every Business object in the Business table.
+    """
     with Session() as session:
         # Get all businesses
-        businesses = list(session.scalars(select(Business)).all())
-        return businesses
-    
-# Update
+        businesses = session.scalars(select(Business)).all()
+        return list(businesses)
+
 # Returns all reviews for a certain business id
-def get_reviews_for_business(business_id):
-    session = Session()
+def get_reviews_for_business(business_id: int) -> list[Review]:
+    """Retrieves all reveiws for a certain business.
+
+    Args:
+        business_id (int): The id of the business that contains the desired reviews.
     
-    stmt = select(Review).where(Review.business_id == business_id)
-    reviews = session.scalars(stmt).all()
-    session.close()
-    return reviews
+    Returns:
+        list[Review]: A list of Review objects with the corresponding buisness_id
+    """
+    with Session() as session:
+        stmt = select(Review).where(Review.business_id == business_id)
+        reviews = session.scalars(stmt).all()
+        return list(reviews)
 
-# Returns avg rating (num of ratings) for a certain business id as a string
-def get_rating_str(business_id):
-    session = Session()
+def add_preset_tag(tag_name: str):
+    """Creates a new preset tag with a given tag_name
 
-    stmt = select(func.avg(Review.rating).label('rating'), 
-                  func.count(Review.rating).label('num')
-                  ).where(Review.business_id == business_id)
-    
-    result = session.execute(stmt).one_or_none()
-    session.close()
-    if result is not None:
-        return f"⭐{round(result.rating, 1)} ({result.num})"
-    else:
-        return f"⭐None (0)"
-
-def add_preset_tag(tag):
+    Args:
+        tag_name (str): The name of the new tag
+    """
     with Session() as session:
         with session.begin():
-            new_tag = Tag(tag_name=tag)
+            new_tag = Tag(tag_name=tag_name)
             session.add(new_tag)
 
-def set_business_tag(business_id, tag_id):
+def set_business_tag(business_id: int, tag_id: int):
+    """Adds a tag to a business.
+
+    Args:
+        business_id (int): The id of the business adding the tag.
+        tag_id (int): The id of the tag to be added.
+    """
     with Session() as session:
         with session.begin():
             new_btag = BusinessTag(business_id=business_id, tag_id=tag_id)
             session.add(new_btag)
 
-def get_tags_from_business(business_id: int, names=False): 
+def get_tags_from_business(business_id: int, names=False) -> list: 
     """Gets all the tags from a specific business ID.
 
     Args:
@@ -116,21 +142,34 @@ def get_tags_from_business(business_id: int, names=False):
 
         return tag_list
 
-def get_tag_from_id(tag_id):
+def get_tag_from_id(tag_id: int) -> str:
+    """ Gets the name of a specific tag
+
+    Args:
+        tag_id (int): The id of the tag.
+
+    Returns:
+        str: The name of the tag with the given id
+
+    Raises:
+        AssertionError: If tag_id does not exist in the Tag data table.
+    """
     with Session() as session:
         tag = session.get(Tag, tag_id)
         assert tag
         return tag.tag_name
 
 def run_search(query: str, business_list: list[Business]) -> list[Business]:
-    """Runs a search with a given query on a list of businesses, retrieving the
-        most relevant businesses. Utilizes a multi-stage search algorithm, including business
-        title, tags, category, and description. Also, uses Damerau-Levenshtein string similarity
-        metric for typo-detection. Only businesses above a certain dynamic threshold are returned.
+    """Runs a search with a given query on a list of businesses.
+
+    Retrieves the most relevant businesses. Utilizes a multi-stage search algorithm,
+    including business title, tags, category, and description. Also, 
+    uses Damerau-Levenshtein string similarity metric for typo-detection. 
+    Only businesses above a certain dynamic threshold are returned.
 
     Args:
-        query (str): The search input
-        business_list (list[Business]): A list of business objects to search through
+        query (str): The search input.
+        business_list (list[Business]): A list of business objects to search through.
 
     Returns:
         list[Business]: A list containing business objects of any matching businesses, 
@@ -188,13 +227,32 @@ def run_search(query: str, business_list: list[Business]) -> list[Business]:
 
         return business_data_list
 
+def get_business_from_id(business_id: int) -> Business | None:
+    """Returns the Business object from a given id.
 
-def get_business_from_id(business_id):
+    Args:
+        business_id (int): The id of the desired business.
+
+    Returns:
+        Business | None: Returns the Business object matching the business_id, if it exists. Else, returns None.
+    """
     with Session() as session:
         return session.get(Business, business_id)
     
+def get_distance_to_business(business_id: int, user_lat: float, user_lon: float) -> float:
+    """Caclulates the distance between a business and a set of coordinates.
 
-def get_distance_to_business(business_id, user_lat, user_lon):
+    Args:
+        business_id (int): The id of the desired business.
+        user_lat (float): The current latitude coordinate of the user.
+        user_lon (float): The current longitude coordinate of the user.
+
+    Returns:
+        float: The distance between the business and the user in miles (unrounded).
+
+    Raises:
+        AssertionError: If the business_id does not exist.
+    """
     with Session() as session:
         b = session.get(Business, business_id)
         assert b

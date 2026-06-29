@@ -34,6 +34,12 @@ class Ui_Form(object):
         self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 760, 673))
         self.verticalLayout = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalSpacer = QSpacerItem(50, 50, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer)
+
         self.username_label = QLabel(self.scrollAreaWidgetContents)
         self.username_label.setObjectName(u"username_label")
         font = QFont()
@@ -42,14 +48,27 @@ class Ui_Form(object):
         self.username_label.setFont(font)
         self.username_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.verticalLayout.addWidget(self.username_label)
+        self.horizontalLayout.addWidget(self.username_label)
+
+        self.settings_button = QPushButton(self.scrollAreaWidgetContents)
+        self.settings_button.setObjectName(u"settings_button")
+        self.settings_button.setMinimumSize(QSize(50, 50))
+        self.settings_button.setMaximumSize(QSize(50, 50))
+        font1 = QFont()
+        font1.setPointSize(18)
+        self.settings_button.setFont(font1)
+
+        self.horizontalLayout.addWidget(self.settings_button)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
 
         self.bookmarks_label = QLabel(self.scrollAreaWidgetContents)
         self.bookmarks_label.setObjectName(u"bookmarks_label")
-        font1 = QFont()
-        font1.setPointSize(15)
-        font1.setBold(True)
-        self.bookmarks_label.setFont(font1)
+        font2 = QFont()
+        font2.setPointSize(15)
+        font2.setBold(True)
+        self.bookmarks_label.setFont(font2)
 
         self.verticalLayout.addWidget(self.bookmarks_label)
 
@@ -79,9 +98,9 @@ class Ui_Form(object):
 
         self.report_gen_button = QPushButton(self.scrollAreaWidgetContents)
         self.report_gen_button.setObjectName(u"report_gen_button")
-        font2 = QFont()
-        font2.setBold(True)
-        self.report_gen_button.setFont(font2)
+        font3 = QFont()
+        font3.setBold(True)
+        self.report_gen_button.setFont(font3)
 
         self.verticalLayout.addWidget(self.report_gen_button)
 
@@ -98,6 +117,7 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.username_label.setText(QCoreApplication.translate("Form", u"username", None))
+        self.settings_button.setText(QCoreApplication.translate("Form", u"\u2699\ufe0f", None))
         self.bookmarks_label.setText(QCoreApplication.translate("Form", u"Bookmarks", None))
 #if QT_CONFIG(tooltip)
         self.report_gen_button.setToolTip(QCoreApplication.translate("Form", u"Creates and downloads a PDF report of all user information", None))

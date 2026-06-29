@@ -8,6 +8,8 @@ import random
 
 from gui.generated.ui_signup_page import Ui_Form as signup_page
 
+from gui.widgets.location_editor import LocationEditor
+
 import pyttsx3
 
 # Represents the signup page, where users can create new accounts by entering username, password, and completing a captcha
@@ -97,10 +99,13 @@ class SignupPage(QWidget):
 
         # If both fields have valid inputs, add new account to the database
         if self.validate_signup_input(username, password, confirm_password, captcha_attempt) == True:
-            new_user_id = add_user(username, password)
+            new_user_id = add_user(username, password, None, None)
             self.ui.error_label.setText("Success!")
             app_session.set_user_id(new_user_id)
+            editor = LocationEditor()
+            editor.exec()
             self.signup_success.emit()
+
 
     # Choose a random captcha from the list, and display the matching image
     def load_random_captcha(self):

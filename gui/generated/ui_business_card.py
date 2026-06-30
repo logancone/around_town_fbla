@@ -34,6 +34,7 @@ class Ui_Form(object):
         self.horizontalLayout = QHBoxLayout(Form)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.setSpacing(3)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.title = QLabel(Form)
         self.title.setObjectName(u"title")
@@ -41,6 +42,7 @@ class Ui_Form(object):
         font.setPointSize(13)
         font.setBold(True)
         self.title.setFont(font)
+        self.title.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.title.setWordWrap(True)
 
         self.verticalLayout.addWidget(self.title)
@@ -77,7 +79,7 @@ class Ui_Form(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout_3)
 
-        self.verticalLayout.setStretch(0, 3)
+        self.verticalLayout.setStretch(0, 5)
         self.verticalLayout.setStretch(1, 2)
         self.verticalLayout.setStretch(2, 1)
 
@@ -85,6 +87,10 @@ class Ui_Form(object):
 
         self.thumbnail = QLabel(Form)
         self.thumbnail.setObjectName(u"thumbnail")
+        sizePolicy.setHeightForWidth(self.thumbnail.sizePolicy().hasHeightForWidth())
+        self.thumbnail.setSizePolicy(sizePolicy)
+        self.thumbnail.setMinimumSize(QSize(109, 109))
+        self.thumbnail.setMaximumSize(QSize(109, 109))
         self.thumbnail.setScaledContents(True)
 
         self.horizontalLayout.addWidget(self.thumbnail)

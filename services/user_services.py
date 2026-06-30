@@ -39,7 +39,7 @@ import json
 # User services include any database queries/updates that mainly pertain to the user
 
 # Adds a new user to User table and returns its id, storing the password as a hash
-def add_user(username, password, lat, lon):
+def add_user(username: str, password: str, lat: float, lon: float) -> int:
     """Adds a new user to the User table.
     
     Returns:
@@ -54,7 +54,16 @@ def add_user(username, password, lat, lon):
             return new_user.id
 
 # Takes a username and password and checks if the combination exists in User table
-def authenticate_user(username, password):
+def authenticate_user(username: str, password: str) -> User | None:
+    """Authenticate a user by username and password.
+
+    Args:
+        username (str): The username provided by the user.
+        password (str): The plaintext password to verify.
+
+    Returns:
+        User | None: The authenticated user object if the credentials are valid; otherwise None.
+    """
     # Open a new Session
     with Session() as session:
         # Search Users with this specific username
@@ -68,7 +77,15 @@ def authenticate_user(username, password):
             return None
 
 # Takes in a user_id and returns the user(if exists, else none)
-def get_username_from_id(user_id):
+def get_username_from_id(user_id: int) -> str | None:
+    """Return the username for a given user ID.
+
+    Args:
+        user_id (int): The ID of the user to look up.
+
+    Returns:
+        str | None: The username if the user exists; otherwise None.
+    """
     with Session() as session:
         user = session.get(User, user_id)
 
@@ -78,7 +95,15 @@ def get_username_from_id(user_id):
             return None
 
 # Checks to see if any users have a specific username, returns true if so 
-def is_username_available(username):
+def is_username_available(username: str) -> bool:
+    """Check whether a username is available for registration.
+
+    Args:
+        username (str): The username to test.
+
+    Returns:
+        bool: True if the username is not in use, False otherwise.
+    """
     with Session() as session:
         stmt = select(User).where(User.username == username)
         user = session.scalars(stmt).first()
@@ -89,6 +114,15 @@ def is_username_available(username):
             return False
 
 def generate_user_report(user_id, user_info: bool, bookmarked_businesses: bool, owned_businesses: bool, review_history: bool):
+    """Generate a PDF report for a user and open it on the local machine.
+
+    Args:
+        user_id (int): The ID of the user for whom to generate the report.
+        user_info (bool): Whether to include basic user profile information.
+        bookmarked_businesses (bool): Whether to include bookmarked businesses.
+        owned_businesses (bool): Whether to include businesses owned by the user.
+        review_history (bool): Whether to include the user's review history.
+    """
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = f"UserReport_{timestamp}.pdf"
 
@@ -226,7 +260,12 @@ def generate_user_report(user_id, user_info: bool, bookmarked_businesses: bool, 
     open_file(filename)
 
 
-def open_file(path):
+def open_file(path: str):
+    """Open a file using the system default application.
+
+    Args:
+        path (str): The filesystem path of the file to open.
+    """
     if sys.platform.startswith("win"):
         os.startfile(path)
     elif sys.platform.startswith("darwin"):
@@ -235,7 +274,16 @@ def open_file(path):
         subprocess.call(["xdg-open", path])
 
 
-def toggle_bookmark(user_id, business_id):
+def toggle_bookmark(user_id: int, business_id: int):
+    """Toggle a bookmark for a user and business pair.
+
+    If a bookmark exists for the given user and business, it is removed. Otherwise,
+    a new bookmark record is created.
+
+    Args:
+        user_id (int): The ID of the user.
+        business_id (int): The ID of the business.
+    """
     with Session() as session:
         with session.begin():
             bookmark = session.get(Bookmark, (user_id, business_id))
@@ -253,13 +301,30 @@ def get_users_bookmarked_business_ids(user_id: int) -> set[int]:
         return set(session.scalars(stmt).all())
 
 def get_users_bookmarked_businesses(user_id:int) -> list[Business]:
+    """Return the businesses bookmarked by a user.
+
+    Args:
+        user_id (int): The ID of the user.
+
+    Returns:
+        list[Business]: A list of bookmarked Business objects.
+    """
     with Session() as session:
         stmt = select(Business).join(Bookmark, Bookmark.business_id == Business.id).where(Bookmark.user_id == user_id)
         
         businesses = list(session.scalars(stmt).all())
         return businesses
 
-def check_if_bookmark(user_id, business_id):
+def check_if_bookmark(user_id: int, business_id: int) -> bool:
+    """Return whether a bookmark exists for a user-business pair.
+
+    Args:
+        user_id (int): The ID of the user.
+        business_id (int): The ID of the business.
+
+    Returns:
+        bool: True if the bookmark exists, False otherwise.
+    """
     with Session() as session:
         with session.begin():
             bookmark = session.get(Bookmark, (user_id, business_id))
@@ -268,25 +333,59 @@ def check_if_bookmark(user_id, business_id):
             else:
                 return False
 
-def get_users_reviews(user_id):
+def get_users_reviews(user_id: int) -> list[Review]:
+    """Return all reviews authored by a user.
+
+    Args:
+        user_id (int): The ID of the user.
+
+    Returns:
+        list[Review]: A list of reviews created by the user.
+    """
     with Session() as session:
         stmt = select(Review).where(Review.user_id == user_id)
 
-        return session.scalars(stmt).all()
+        return list(session.scalars(stmt).all())
 
 def get_users_owned_businesses(user_id: int) -> list[Business]:
+    """Return businesses owned by a specific user.
+
+    Args:
+        user_id (int): The ID of the user.
+
+    Returns:
+        list[Business]: Businesses with owner_id equal to the user ID.
+    """
     with Session() as session:
         stmt = select(Business).where(Business.owner_id == user_id)
         businesses = list(session.scalars(stmt).all())
         return businesses
 
 def get_user_from_id(user_id: int) -> User:
+    """Return the User object for the given user ID.
+
+    Args:
+        user_id (int): The ID of the user.
+
+    Returns:
+        User: The User object corresponding to the ID.
+
+    Raises:
+        AssertionError: If the user does not exist.
+    """
     with Session() as session:
         user = session.get(User, user_id)
         assert user
         return user
 
 def update_user_location(user_id: int, new_lat: float, new_lon: float):
+    """Update the stored location for a user.
+
+    Args:
+        user_id (int): The ID of the user.
+        new_lat (float): The new latitude.
+        new_lon (float): The new longitude.
+    """
     with Session() as session:
         with session.begin():
             user = session.get(User, user_id)
@@ -296,6 +395,7 @@ def update_user_location(user_id: int, new_lat: float, new_lon: float):
 
 # Create a class to score recommendation data (tags/categories and matching scores)
 class RecommendationService:
+    """Score businesses using a user's review and bookmark history."""
 
     def __init__(self, user_id: int | None):
         self.user_id = user_id
@@ -309,12 +409,14 @@ class RecommendationService:
 
     # Clears recommendation profile
     def clear(self):
+        """Reset the recommendation profile state."""
         self.tag_scores.clear()
         self.category_scores.clear()
         self.sorted_businesses.clear()
 
     # Goes through users reviews to build a new recommendation profile
     def build_profile(self):
+        """Build the user's recommendation profile from reviews and bookmarks."""
         self.clear()
         assert self.user_id
 
@@ -351,7 +453,19 @@ class RecommendationService:
             self.category_scores[category] = self.category_scores.get(category, 0) + 1.5
 
     def get_recommendation_score(self, business_id):
-        reviewed_ids = {review.business_id for review in get_users_reviews(self.user_id)}
+        """Compute the recommendation score for a specific business.
+
+        Args:
+            business_id (int): The ID of the business to score.
+
+        Returns:
+            float: A score representing how well the business matches the user.
+        """
+        if self.user_id:
+            reviewed_ids = {review.business_id for review in get_users_reviews(self.user_id)}
+        else:
+            reviewed_ids = []
+
         if business_id in reviewed_ids:
             return 0
 
@@ -372,15 +486,18 @@ class RecommendationService:
         return total_score
     
     def sort_all_businesses_by_rec_score(self):
+        """Sort all businesses by recommendation score and cache the sorted list."""
         all_businesses = get_all_businesses()
         self.sorted_businesses = sorted(all_businesses, key=lambda b:self.get_recommendation_score(b.id))
         return self.sorted_businesses
     
     def sort_some_businesses_by_rec_score(self, businesses):
+        """Sort a provided list of businesses by recommendation score."""
         sorted_businesses = sorted(businesses, key=lambda b:self.get_recommendation_score(b.id))
         return sorted_businesses
     
     def create_ai_context_file(self):
+        """Create a JSON payload describing the user's recommendation profile."""
         top_positive_tags = [
             {"tag": get_tag_from_id(k), "score": v}
             for k, v in sorted(self.tag_scores.items(),
@@ -423,7 +540,13 @@ class RecommendationService:
 
 # AI STUFF
 class AIService:
+    """Wrap OpenAI interactions for the user recommendation chat feature."""
+
     def __init__(self):
+        """Initialize the AI service and configure the OpenAI client.
+
+        The OpenAI API key is loaded from the environment using dotenv.
+        """
         self.messages = []
         # self.cur_message = ""
 
@@ -434,6 +557,15 @@ class AIService:
     #     self.cur_message = "You are a recommendation agent for an application, AroundTown, where users can find local small businesses."
 
     def send_chat(self, chat: str, rec_service: RecommendationService):
+        """Send a chat message to the AI and return the response.
+
+        Args:
+            chat (str): The user's question or prompt.
+            rec_service (RecommendationService): Recommendation context provider.
+
+        Returns:
+            str: The AI-generated response text.
+        """
         assert len(chat) > 0 and len(chat) < 1000
         self.messages.append(chat)
 
@@ -477,6 +609,7 @@ class AIService:
             return response.output_text
     
     def decide_reasoning_level(self, message: str) -> str:
+        """Choose an OpenAI reasoning level based on the user's message."""
         msg = message.lower().strip()
 
         # very short + no real content
@@ -500,6 +633,7 @@ class AIService:
         return "low"
     
     def decide_verbosity(self, message: str) -> str:
+        """Choose an OpenAI verbosity level based on the user's message."""
         msg = message.lower()
 
         if any(k in msg for k in ["detailed", "in depth", "full explanation", "detail"]):
@@ -511,6 +645,10 @@ class AIService:
         return "low"
 
     def ai_data_request(self, ai_json, input):
+        """Handle JSON action requests returned by the AI.
+
+        If the AI requests detailed business information, fetch it and resend the query.
+        """
         try:
             obj = json.loads(ai_json)
 
@@ -561,16 +699,20 @@ class AIService:
             return ai_json
 
 class AIWorker(QThread):
+    """Run AI requests in a separate thread and emit results on completion."""
+
     finished = Signal(str)
     error = Signal(str)
 
     def __init__(self, ai_service: AIService, message: str, rec_service: RecommendationService):
+        """Initialize the worker with the AI service and the current request data."""
         super().__init__()
         self.ai_service = ai_service
         self.message = message
         self.rec_service = rec_service
     
     def run(self):
+        """Execute the AI request and emit the finished or error signal."""
         try:
             response = self.ai_service.send_chat(self.message, self.rec_service)
             self.finished.emit(response)

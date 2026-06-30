@@ -62,7 +62,7 @@ def add_review(user_id: int, business_id: int, rating: float, content: str):
             business.rating_count = result.num
             
 def get_all_businesses() -> list[Business]:
-    """Retreives a list of all Business objects from the database.
+    """Retrieve a list of all Business objects from the database.
 
     Returns:
         list[Business]: A list of every Business object in the Business table.
@@ -74,13 +74,13 @@ def get_all_businesses() -> list[Business]:
 
 # Returns all reviews for a certain business id
 def get_reviews_for_business(business_id: int) -> list[Review]:
-    """Retrieves all reveiws for a certain business.
+    """Retrieve all reviews for a specific business.
 
     Args:
-        business_id (int): The id of the business that contains the desired reviews.
+        business_id (int): The ID of the business whose reviews should be returned.
     
     Returns:
-        list[Review]: A list of Review objects with the corresponding buisness_id
+        list[Review]: A list of Review objects associated with the business.
     """
     with Session() as session:
         stmt = select(Review).where(Review.business_id == business_id)
@@ -111,20 +111,17 @@ def set_business_tag(business_id: int, tag_id: int):
             session.add(new_btag)
 
 def get_tags_from_business(business_id: int, names=False) -> list: 
-    """Gets all the tags from a specific business ID.
+    """Retrieve tags associated with a business.
 
     Args:
         business_id (int): The ID of the business to search for.
-        names (bool, optional): If True, returns a list of tag names (strings). 
-            If False, returns a list of tag ids. Defaults to False.
+        names (bool, optional): If True, returns a list of tag names. Defaults to False.
 
     Returns:
-        list[int | str]: A list containing the tag ids or their names 
-        associated with the business.
+        list[int | str]: A list of tag IDs or names associated with the business.
 
     Raises:
-        AssertionError: If a tag associated with the business cannot be found 
-            in the Tag database table.
+        AssertionError: If a tag referenced by the business cannot be found in the Tag table.
     """
     with Session() as session:
         stmt = select(BusinessTag).where(BusinessTag.business_id == business_id)
@@ -143,16 +140,16 @@ def get_tags_from_business(business_id: int, names=False) -> list:
         return tag_list
 
 def get_tag_from_id(tag_id: int) -> str:
-    """ Gets the name of a specific tag
+    """Return the name of the tag with the given ID.
 
     Args:
-        tag_id (int): The id of the tag.
+        tag_id (int): The ID of the tag.
 
     Returns:
-        str: The name of the tag with the given id
+        str: The name of the tag.
 
     Raises:
-        AssertionError: If tag_id does not exist in the Tag data table.
+        AssertionError: If the tag does not exist.
     """
     with Session() as session:
         tag = session.get(Tag, tag_id)
@@ -160,20 +157,18 @@ def get_tag_from_id(tag_id: int) -> str:
         return tag.tag_name
 
 def run_search(query: str, business_list: list[Business]) -> list[Business]:
-    """Runs a search with a given query on a list of businesses.
+    """Search businesses by query using exact, prefix, fuzzy, and tag matching.
 
-    Retrieves the most relevant businesses. Utilizes a multi-stage search algorithm,
-    including business title, tags, category, and description. Also, 
-    uses Damerau-Levenshtein string similarity metric for typo-detection. 
-    Only businesses above a certain dynamic threshold are returned.
+    Retrieves the most relevant companies using business name, tags, category, and
+    description. The results are filtered by a dynamic threshold so that only
+    sufficiently relevant businesses are returned.
 
     Args:
-        query (str): The search input.
-        business_list (list[Business]): A list of business objects to search through.
+        query (str): The search query.
+        business_list (list[Business]): A list of business objects to search.
 
     Returns:
-        list[Business]: A list containing business objects of any matching businesses, 
-            ranked by relevance to the search query
+        list[Business]: Matching businesses ordered by relevance.
     """
     with Session() as session:
         query = query.lower()
@@ -240,15 +235,15 @@ def get_business_from_id(business_id: int) -> Business | None:
         return session.get(Business, business_id)
     
 def get_distance_to_business(business_id: int, user_lat: float, user_lon: float) -> float:
-    """Caclulates the distance between a business and a set of coordinates.
+    """Calculate the distance between a business and a user's coordinates.
 
     Args:
-        business_id (int): The id of the desired business.
-        user_lat (float): The current latitude coordinate of the user.
-        user_lon (float): The current longitude coordinate of the user.
+        business_id (int): The ID of the desired business.
+        user_lat (float): The user's latitude.
+        user_lon (float): The user's longitude.
 
     Returns:
-        float: The distance between the business and the user in miles (unrounded).
+        float: The distance in miles between the user and the business.
 
     Raises:
         AssertionError: If the business_id does not exist.

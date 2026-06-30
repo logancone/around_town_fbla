@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QFrame
 from PySide6.QtCore import Signal, Qt
-from PySide6.QtGui import QMouseEvent, QPixmap, QIcon
+from PySide6.QtGui import QMouseEvent, QPixmap, QIcon, QFont
 
 from database import Business
 from services.user_services import toggle_bookmark
@@ -26,6 +26,11 @@ class BusinessCard(QFrame):
         self.id = business.id
 
         self.ui.title.setText(business.name)
+        # Dynamically adjust title fit:
+        if len(business.name) >= 23:
+            # self.ui.title.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+            self.ui.title.setStyleSheet("font-size: 12.95px;")
+        self.ui.title.adjustSize()
         self.ui.category.setText(business.category.capitalize())
 
         # Create and set rating string
@@ -49,6 +54,7 @@ class BusinessCard(QFrame):
 
         # Load thumbnail
         pixmap = QPixmap(business.thumbnail_link)
+        # scaled_pixmap = pixmap.scaled(self.ui.thumbnail.size(), Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
         
         self.ui.thumbnail.setPixmap(pixmap)
 

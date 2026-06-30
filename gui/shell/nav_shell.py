@@ -36,7 +36,6 @@ class NavShell(QWidget):
         self.ui.page_stack.addWidget(self.profile_page)
 
         self.discover_page.load_all_business_data()
-        self.discover_page.refresh_cards()
 
         self.set_discover_page()
 
@@ -53,7 +52,8 @@ class NavShell(QWidget):
     # Sets current page to the discover page, along with loading all cards.
     def set_discover_page(self):
         app_session.leave_business()
-        # self.discover_page.sort_cards_by_recommendation()
+        # Refresh discover cards so bookmark state stays in sync after changes.
+        self.discover_page.refresh_cards()
         self.ui.page_stack.setCurrentWidget(self.discover_page)
 
     # Sets current page to the business page, loading all business info

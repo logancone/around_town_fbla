@@ -44,21 +44,24 @@ class BusinessPage(QWidget):
         self.ui.description.setText(business.business_description)
         
         # Create a string list of tags from the BusinessTag database
-        tags = get_tags_from_business(business.id, True)
+        tags = get_tags_from_business(business.id, names=True)
         tag_str = f"Tags: {tags.pop(0)}"
         for tag in tags:
             tag_str += f", {tag}"
         self.ui.tag_label.setText(tag_str)
 
-        distance = round(get_distance_to_business(business.id, app_session.cur_lat, app_session.cur_lon), 1)
-
-        self.ui.distance_label.setText(f"{distance} Miles Away")
+        if type(app_session.cur_lat) is float and type(app_session.cur_lon) is float:
+            distance = round(get_distance_to_business(business.id, app_session.cur_lat, app_session.cur_lon), 1)
+            self.ui.distance_label.setText(f"{distance} Miles Away")
+        else:
+            self.ui.distance_label.setText("Distance Unavailable")
 
         if check_if_bookmark(app_session.user_id, app_session.business_id):
             self.ui.bookmark_button.setIcon(self.filled_icon)
             self.ui.bookmark_button.setChecked(True)
         else:
             self.ui.bookmark_button.setIcon(self.unfilled_icon)
+            self.ui.bookmark_button.setChecked(False)
 
         self.load_reviews()
 
